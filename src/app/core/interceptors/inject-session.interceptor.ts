@@ -13,22 +13,26 @@ export class InjectSessionInterceptor implements HttpInterceptor {
 
   constructor(private cookieService: CookieService) {}
 
+  /**
+   * Intercepta todas las peticiones HTTP y adjunta el token en el header Authorization
+   * @param request Petición HTTP
+   * @param next Siguiente handler
+   * @returns Observable de la petición
+   */
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    try { 
-      const token = this.cookieService.get('token');
-      let newRequest = request;
+    const token = this.cookieService.get('token');
 
-      newRequest = request.clone({
+    // Si existe token, lo adjunta al header
+    if (token) {
+      console.log('InjectSessionInterceptor: Adjuntando token al request');
+      request = request.clone({
         setHeaders: {
-          authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         }
-      })
-      
-      return next.handle(newRequest);
-    } catch (error) {
-      console.log(error);
+      });
     }
 
     return next.handle(request);
   }
 }
+

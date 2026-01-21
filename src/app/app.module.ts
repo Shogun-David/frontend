@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AuthModule } from './modules/auth/auth.module';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    NgbModule
+    NgbModule,
+    AuthModule
   ],
   providers: [
     CookieService
