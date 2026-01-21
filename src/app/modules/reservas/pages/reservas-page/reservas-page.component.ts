@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ReservasService } from '../../services/reservas.service';
 import { ReservaModel } from '@core/models/reserva.model';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CrearReservaModalComponent } from '@modules/reservas/components/crear-reserva-modal/crear-reserva-modal.component';
 
 @Component({
   selector: 'app-reservas-page',
@@ -18,7 +20,10 @@ export class ReservasPageComponent implements OnInit {
   // 🔴 luego lo obtendrás del JWT
   userId = 1;
 
-  constructor(private reservasService: ReservasService) {}
+  constructor(
+    private reservasService: ReservasService,
+    private modalService: NgbModal
+  ) {}
 
   ngOnInit(): void {
     
@@ -58,5 +63,17 @@ export class ReservasPageComponent implements OnInit {
   cambiarPagina(p: number): void {
     this.page = p;
     this.cargarReservas();
+  }
+
+  abrirCrearReserva(): void {
+    const modalRef = this.modalService.open(CrearReservaModalComponent, {
+      size: 'lg',
+      centered: true,
+      backdrop: 'static'
+    });
+
+    modalRef.closed.subscribe(() => {
+      this.cargarReservas();
+    });  
   }
 }
