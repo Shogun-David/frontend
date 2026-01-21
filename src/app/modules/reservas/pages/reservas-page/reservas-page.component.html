@@ -1,1 +1,105 @@
-<p>reservas-page works!</p>
+<div class="container-fluid">
+
+  <!-- Header -->
+ <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h4 class="mb-0">
+        <i class="uil uil-journal-text me-2"></i>
+        Mis Reservas
+      </h4>
+      <small class="text-muted">
+        Gestión y visualización de tus reservas
+      </small>
+    </div>
+
+    <div class="d-flex gap-2 align-items-center">
+      <!-- Filtro -->
+      <select
+        class="form-select"
+        style="width: 180px"
+        [(ngModel)]="estadoFiltro"
+        (change)="filtrar()"
+      >
+        <option value="">Todos</option>
+        <option value="ACTIVA">ACTIVA</option>
+        <option value="CANCELADA">CANCELADA</option>
+        <option value="FINALIZADA">FINALIZADA</option>
+      </select>
+
+      <!-- Botón Nueva Reserva -->
+      <button
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#crearReservaModal"
+      >
+        <i class="uil uil-plus-circle me-1"></i>
+        Nueva Reserva
+      </button>
+    </div>
+  </div>
+
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border text-primary"></div>
+  </div>
+
+  <!-- Tabla -->
+  <div *ngIf="!loading" class="card shadow-sm">
+    <table class="table table-hover mb-0 align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Sala</th>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th>Estado</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let r of reservas">
+          <td>{{ r.sala }}</td>
+          <td>{{ r.fechaInicio | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ r.fechaFin | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <span
+              class="badge"
+              [ngClass]="{
+                'bg-success': r.estado === 'ACTIVA',
+                'bg-danger': r.estado === 'CANCELADA',
+                'bg-secondary': r.estado === 'FINALIZADA'
+              }"
+            >
+              {{ r.estado }}
+            </span>
+          </td>
+        <td class="text-center">
+          <button
+            *ngIf="r.estado === 'ACTIVA'"
+            class="btn btn-sm btn-outline-danger"
+            (click)="cancelar(r)"
+            title="Cancelar reserva"
+          >
+            <i class="uil uil-times-circle"></i>
+          </button>
+        </td>
+
+        </tr>
+
+        <tr *ngIf="reservas.length === 0">
+          <td colspan="5" class="text-center py-4 text-muted">
+            No hay reservas registradas
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <br/>
+
+  <app-calendario-reservas></app-calendario-reservas>
+
+
+</div>
