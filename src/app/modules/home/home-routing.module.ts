@@ -5,19 +5,24 @@ import { HomePageComponent } from './pages/home-page/home-page.component';
 const routes: Routes = [
   {
     path: '',
-      component: HomePageComponent,
-      children: [
-          {
-              path: '',
-              redirectTo: 'reservas',
-              pathMatch: 'full'
-          },
-          {
-              path: 'reservas',
-              loadChildren: () =>
-                  import('../reservas/reservas.module').then(m => m.ReservasModule)
-          }
-      ]
+    component: HomePageComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'reservas',
+        pathMatch: 'full'
+      },
+      {
+        path: 'reservas',
+        loadChildren: () =>
+          import('../reservas/reservas.module').then(m => m.ReservasModule)
+      },
+      {
+        path: 'salas',
+        loadChildren: () =>
+          import('../sala/sala.module').then(m => m.SalaModule)
+      }
+    ]
   }
 ];
 

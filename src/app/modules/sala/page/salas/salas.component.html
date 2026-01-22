@@ -1,0 +1,131 @@
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h4 class="mb-0">
+                <i class="uil uil-journal-text me-2"></i>
+                Salas
+            </h4>
+            <small class="text-muted">
+                Gestión y visualización de tus salas
+            </small>
+        </div>
+
+        <div class="d-flex gap-2 align-items-center">
+            <!-- Filtro -->
+            <select class="form-select" style="width: 180px" (change)="onEstadoChange($event)">
+                <option value="">Todos</option>
+                <option value="D">DISPONIBLE</option>
+                <option value="N">NO DISPONIBLE</option>
+            </select>
+
+            <!-- Botón Nueva Sala -->
+            <button (click)="openCreateModal()" class="btn btn-primary">
+                <i class="uil uil-plus-circle me-1"></i>
+                Nueva Sala
+            </button>
+            <!-- Modal Form Sala -->
+            <app-form-sala *ngIf="showModal" [sala]="selectedSala" (saved)="onSalaSaved()"
+                (closed)="showModal = false"></app-form-sala>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div>
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th (click)="changeSort('nombre')" style="cursor: pointer">
+                        Nombre
+                        <i class="uil ms-1" [ngClass]="{
+                        'uil-sort': paginationState.sortColumn !== 'nombre',
+                        'uil-angle-up': paginationState.sortColumn === 'nombre' 
+                            && paginationState.sortDirection === 'ASC',
+                        'uil-angle-down': paginationState.sortColumn === 'nombre' 
+                            && paginationState.sortDirection === 'DESC'
+                        }">
+                        </i>
+                    </th>
+
+                    <th (click)="changeSort('capacidad')" style="cursor: pointer">
+                        Capacidad
+                        <i class="uil ms-1" [ngClass]="{
+                        'uil-sort': paginationState.sortColumn !== 'capacidad',
+                        'uil-angle-up': paginationState.sortColumn === 'capacidad' 
+                            && paginationState.sortDirection === 'ASC',
+                        'uil-angle-down': paginationState.sortColumn === 'capacidad' 
+                            && paginationState.sortDirection === 'DESC'
+                        }">
+                        </i>
+                    </th>
+                    <th>Ubicación</th>
+                    <th>Estado</th>
+
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody *ngIf="salas.length > 0; else noData">
+                <tr *ngFor="let sala of salas">
+                    <td>{{ sala.nombre }}</td>
+                    <td>{{ sala.capacidad }}</td>
+                    <td>{{ sala.ubicacion }}</td>
+                    <td>
+                        <span class="badge" [ngClass]="{
+                            'bg-success': sala.estado === 'D',
+                            'bg-danger': sala.estado === 'N'
+                            }">
+                            {{ sala.estado }}
+                        </span>
+                    </td>
+
+                    <td class="text-center">
+                        <button (click)="openEditModal(sala)" class="btn btn-secondary">
+                            Actualizar
+                        </button>
+                        <button class="btn btn-warning">
+                            Deshabilitar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+
+            <ng-template #noData>
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">
+                        No hay salas registradas
+                    </td>
+                </tr>
+            </ng-template>
+
+        </table>
+    </div>
+    <!-- Paginación -->
+    <nav class="mt-3" *ngIf="totalPages > 1">
+        <ul class="pagination justify-content-end">
+
+            <!-- Anterior -->
+            <li class="page-item" [class.disabled]="paginationState.pageNumber === 0">
+                <button class="page-link" (click)="goToPage(paginationState.pageNumber - 1)">
+                    Anterior
+                </button>
+            </li>
+
+            <!-- Números de página -->
+            <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+                [class.active]="i === paginationState.pageNumber">
+                <button class="page-link" (click)="goToPage(i)">
+                    {{ i + 1 }}
+                </button>
+            </li>
+
+            <!-- Siguiente -->
+            <li class="page-item" [class.disabled]="paginationState.pageNumber === totalPages - 1">
+                <button class="page-link" (click)="goToPage(paginationState.pageNumber + 1)">
+                    Siguiente
+                </button>
+            </li>
+        </ul>
+    </nav>
+</div>
