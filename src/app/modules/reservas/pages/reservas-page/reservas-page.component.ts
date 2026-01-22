@@ -3,6 +3,8 @@ import { ReservasService } from '../../services/reservas.service';
 import { ReservaModel } from '@core/models/reserva.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CrearReservaModalComponent } from '@modules/reservas/components/crear-reserva-modal/crear-reserva-modal.component';
+import { ConfirmModalComponent } from '@shared/components/confirmar-modal/confirmar-modal.component';
+import { NotificationService } from '@core/services/notification.service';
 
 @Component({
   selector: 'app-reservas-page',
@@ -20,9 +22,12 @@ export class ReservasPageComponent implements OnInit {
   // 🔴 luego lo obtendrás del JWT
   userId = 1;
 
+  eventos: EventInit[] = [];
+
   constructor(
     private reservasService: ReservasService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -52,13 +57,6 @@ export class ReservasPageComponent implements OnInit {
     this.cargarReservas();
   }
 
-  cancelar(reserva: ReservaModel): void {
-    if (!confirm('¿Desea cancelar la reserva?')) return;
-
-    this.reservasService
-      .cancelarReserva(reserva.idReserva, 'Cancelación desde UI')
-      .subscribe(() => this.cargarReservas());
-  }
 
   cambiarPagina(p: number): void {
     this.page = p;
@@ -76,4 +74,33 @@ export class ReservasPageComponent implements OnInit {
       this.cargarReservas();
     });  
   }
+
+
+  cancelar(reserva: ReservaModel): void {
+
+    const modalRef = this.modalService.open(ConfirmModalComponent, {
+      centered: true,
+      backdrop: 'static'
+    });
+
+    modalRef.componentInstance.title = 'Cancelar reserva';
+    modalRef.componentInstance.message =
+      '¿Está seguro que desea cancelar esta reserva? Esta acción no se puede deshacer.';
+    modalRef.componentInstance.confirmText = 'Sí, cancelar';
+    modalRef.componentInstance.cancelText = 'No';
+    modalRef.componentInstance.confirmButtonClass = 'btn-danger';
+
+    modalRef.closed.subscribe(confirmado => {
+      if (confirmado) {
+        this.reservasService
+          .cancelarReserva(reserva.idReserva, 'Cancelación desde UI')
+          .subscribe(() => {
+            this.notificationService.success('Reserva cancelada exitosamente');
+            this.cargarReservas();
+          });
+      }
+    });
+  }
+
+ 
 }

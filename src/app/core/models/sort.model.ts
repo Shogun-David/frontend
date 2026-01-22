@@ -1,4 +1,5 @@
-export interface SortModel {
-  colName: string;
-  direction: 'ASC' | 'DESC';
+export interface SortModel{
+    colName: string;
+    direction: string;
 }
+

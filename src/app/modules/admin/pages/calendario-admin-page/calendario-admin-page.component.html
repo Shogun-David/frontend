@@ -1,0 +1,22 @@
+<div class="container-fluid">
+
+  <div class="mb-3">
+    <h4 class="mb-0">
+      <i class="uil uil-calendar-alt me-2"></i>
+      Mis Reservas
+    </h4>
+    <small class="text-muted">
+      Visualización de reservas en calendario
+    </small>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border text-primary"></div>
+  </div>
+
+  <app-calendario-reservas
+    *ngIf="!loading"
+    [eventos]="eventos">
+  </app-calendario-reservas>
+
+</div>

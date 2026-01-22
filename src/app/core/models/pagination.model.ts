@@ -7,3 +7,4 @@ export interface PaginationModel {
   filters: FilterModel[];
   sorts: SortModel[];
 }
+
