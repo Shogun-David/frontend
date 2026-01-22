@@ -20,7 +20,10 @@
         <label class="form-label">Sala</label>
         <select class="form-select" formControlName="idSala">
           <option value="">Seleccione</option>
-          <option value="1" formControlName="fechaInicio">Sala 1</option> 
+          <option *ngFor="let sala of salas" [value]="sala.idSala">
+            {{ sala.nombre }} - {{ sala.ubicacion }}
+            (Cap. {{ sala.capacidad }})
+          </option>
         </select>
       </div>
 

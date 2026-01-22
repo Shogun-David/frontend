@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { AuthUser } from '@core/models/auth.user';
+import { AuthService } from '@modules/auth/services/auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-slide-bar',
@@ -7,4 +10,17 @@ import { Component } from '@angular/core';
 })
 export class SlideBarComponent {
 
+  user$: Observable<AuthUser | null>;
+
+  constructor(private authService: AuthService) {
+    this.user$ = this.authService.currentUser$;
+  }
+
+  logout() {
+    this.authService.logout();
+  }
+
+  isAdmin(user: AuthUser): boolean {
+    return user.roles.includes('ADMIN');
+  }
 }

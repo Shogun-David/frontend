@@ -1,0 +1,88 @@
+<div class="content">
+  <div class="login-container">
+    <div class="login-card">
+
+      <h1>Iniciar Sesión</h1>
+
+      <!-- ❌ Error de autenticación -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <!-- ℹ️ Credenciales de prueba (solo DEV) -->
+      <div class="credentials-info">
+        <p><strong>Credenciales de prueba:</strong></p>
+        <p>👨‍💼 Admin: <b>admin</b> / admin123</p>
+        <p>👤 Usuario: <b>user</b> / user123</p>
+      </div>
+
+      <!-- 🧾 Formulario -->
+      <form [formGroup]="formLogin" (ngSubmit)="sendLogin()">
+
+        <!-- USERNAME -->
+        <div class="form-group">
+          <label for="username">Usuario</label>
+          <input
+            id="username"
+            type="text"
+            class="form-control"
+            formControlName="username"
+            placeholder="Ingresa tu usuario"
+            autocomplete="username"
+          >
+
+          <small
+            class="error-text"
+            *ngIf="formLogin.get('username')?.hasError('required') && formLogin.get('username')?.touched"
+          >
+            El usuario es requerido
+          </small>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input
+            id="password"
+            type="password"
+            class="form-control"
+            formControlName="password"
+            placeholder="Ingresa tu contraseña"
+            autocomplete="current-password"
+          >
+
+          <small
+            class="error-text"
+            *ngIf="formLogin.get('password')?.hasError('required') && formLogin.get('password')?.touched"
+          >
+            La contraseña es requerida
+          </small>
+
+          <small
+            class="error-text"
+            *ngIf="formLogin.get('password')?.hasError('minlength') && formLogin.get('password')?.touched"
+          >
+            Mínimo 6 caracteres
+          </small>
+        </div>
+
+        <!-- BOTÓN -->
+        <button
+          type="submit"
+          class="btn-login"
+          [disabled]="formLogin.invalid || isLoading"
+        >
+          {{ isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+        </button>
+
+      </form>
+
+      <!-- REGISTRO -->
+      <p class="register-link">
+        ¿No tienes cuenta?
+        <a routerLink="/auth/register">Regístrate aquí</a>
+      </p>
+
+    </div>
+  </div>
+</div>

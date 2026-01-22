@@ -1,0 +1,122 @@
+<div class="content">
+  <div class="register-container">
+    <div class="register-card">
+      <h1>Crear Cuenta</h1>
+      <p class="subtitle">Únete a nuestro sistema de reservas</p>
+      
+      <!-- Mensaje de error -->
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-circle me-2"></i>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Mensaje de éxito -->
+      <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i>
+        {{ successMessage }}
+      </div>
+
+      <form [formGroup]="formRegister" (ngSubmit)="registrar()">
+        
+        <!-- Username -->
+        <div class="form-group">
+          <label for="username">Nombre de Usuario</label>
+          <input 
+            type="text" 
+            id="username" 
+            class="form-control" 
+            formControlName="username"
+            placeholder="juan.perez"
+            [class.is-invalid]="formRegister.get('username')?.invalid && formRegister.get('username')?.touched"
+          >
+          <small class="error-text" *ngIf="formRegister.get('username')?.hasError('required') && formRegister.get('username')?.touched">
+            El nombre de usuario es requerido
+          </small>
+          <small class="error-text" *ngIf="formRegister.get('username')?.hasError('minlength') && formRegister.get('username')?.touched">
+            Mínimo 3 caracteres
+          </small>
+          <small class="error-text" *ngIf="formRegister.get('username')?.hasError('maxlength') && formRegister.get('username')?.touched">
+            Máximo 50 caracteres
+          </small>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Correo Electrónico</label>
+          <input 
+            type="email" 
+            id="email" 
+            class="form-control" 
+            formControlName="email"
+            placeholder="ejemplo@usuario.com"
+            [class.is-invalid]="formRegister.get('email')?.invalid && formRegister.get('email')?.touched"
+          >
+          <small class="error-text" *ngIf="formRegister.get('email')?.hasError('required') && formRegister.get('email')?.touched">
+            El email es requerido
+          </small>
+          <small class="error-text" *ngIf="formRegister.get('email')?.hasError('email') && formRegister.get('email')?.touched">
+            Ingresa un email válido
+          </small>
+          <small class="error-text" *ngIf="formRegister.get('email')?.hasError('emailInvalido') && formRegister.get('email')?.touched">
+            El email debe ser @usuario.com
+          </small>
+          <small class="form-text text-muted d-block mt-1">
+            El email debe terminar con @usuario.com
+          </small>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input 
+            type="password" 
+            id="password" 
+            class="form-control" 
+            formControlName="password"
+            placeholder="••••••••"
+            [class.is-invalid]="formRegister.get('password')?.invalid && formRegister.get('password')?.touched"
+          >
+          <small class="error-text" *ngIf="formRegister.get('password')?.hasError('required') && formRegister.get('password')?.touched">
+            La contraseña es requerida
+          </small>
+          <small class="error-text" *ngIf="formRegister.get('password')?.hasError('minlength') && formRegister.get('password')?.touched">
+            Mínimo 8 caracteres
+          </small>
+          <small class="form-text text-muted d-block mt-1">
+            Mínimo 8 caracteres
+          </small>
+        </div>
+
+        <!-- Confirmar Contraseña -->
+        <div class="form-group">
+          <label for="confirmarPassword">Confirmar Contraseña</label>
+          <input 
+            type="password" 
+            id="confirmarPassword" 
+            class="form-control" 
+            formControlName="confirmarPassword"
+            placeholder="••••••••"
+            [class.is-invalid]="!passwordsCoinciden && formRegister.get('confirmarPassword')?.touched"
+          >
+          <small class="error-text" *ngIf="!passwordsCoinciden && formRegister.get('confirmarPassword')?.touched">
+            Las contraseñas no coinciden
+          </small>
+        </div>
+
+        <button 
+          type="submit" 
+          class="btn-register"
+          [disabled]="!formRegister.valid || !passwordsCoinciden || isLoading"
+        >
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isLoading ? 'Registrando...' : 'Registrarse' }}
+        </button>
+      </form>
+
+      <p class="login-link">
+        ¿Ya tienes cuenta? 
+        <a (click)="irALogin()">Inicia sesión aquí</a>
+      </p>
+    </div>
+  </div>
+</div>
