@@ -19,7 +19,8 @@ export class CalendarioReservasComponent implements OnInit {
   constructor(private reservasService: ReservasService) {}
 
   ngOnInit(): void {
-    this.cargarCalendario();
+    // TODO: Descomentar cuando el backend tenga implementado GET /api/reservas/by-user/{id}
+    // this.cargarCalendario();
   }
 
   cargarCalendario(): void {

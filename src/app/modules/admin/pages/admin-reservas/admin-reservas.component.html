@@ -1,4 +1,220 @@
-<div class="container-fluid">
-  <h2>Ver todas las Reservas</h2>
-  <p>Componente para ver todas las reservas del sistema (solo admin)</p>
+<div class="container-fluid mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>
+        <i class="bi bi-calendar-check"></i> Panel de Administración
+      </h2>
+      
+      <!-- Mensajes de estado -->
+      <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle"></i> {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+      </div>
+      
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-circle"></i> {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+      </div>
+
+      <!-- Tabs de navegación -->
+      <ul class="nav nav-tabs mb-4" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button 
+            class="nav-link" 
+            [ngClass]="{'active': activeTab === 'reservas'}"
+            (click)="activeTab = 'reservas'"
+            type="button" 
+            role="tab">
+            <i class="bi bi-calendar-event"></i> Gestión de Reservas
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button 
+            class="nav-link" 
+            [ngClass]="{'active': activeTab === 'usuarios'}"
+            (click)="activeTab = 'usuarios'"
+            type="button" 
+            role="tab">
+            <i class="bi bi-people"></i> Gestión de Usuarios
+          </button>
+        </li>
+      </ul>
+
+      <!-- TAB 1: GESTIÓN DE RESERVAS -->
+      <div *ngIf="activeTab === 'reservas'">
+        <!-- Filtros -->
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">Filtrar Reservas</h5>
+            
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label for="filtroUsuario" class="form-label">Usuario</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="filtroUsuario"
+                  [(ngModel)]="filtroUsuario"
+                  placeholder="Filtrar por usuario...">
+              </div>
+              
+              <div class="col-md-3">
+                <label for="filtroSala" class="form-label">Sala</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="filtroSala"
+                  [(ngModel)]="filtroSala"
+                  placeholder="Filtrar por sala...">
+              </div>
+              
+              <div class="col-md-3">
+                <label for="filtroFecha" class="form-label">Fecha</label>
+                <input 
+                  type="date" 
+                  class="form-control" 
+                  id="filtroFecha"
+                  [(ngModel)]="filtroFecha">
+              </div>
+              
+              <div class="col-md-3 d-flex align-items-end">
+                <button 
+                  type="button" 
+                  class="btn btn-secondary"
+                  (click)="limpiarFiltros()">
+                  <i class="bi bi-arrow-clockwise"></i> Limpiar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla de reservas -->
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              Total de Reservas: <span class="badge bg-primary">{{ reservasFiltradas.length }}</span>
+            </h5>
+
+            <!-- Loading spinner -->
+            <div *ngIf="isLoadingReservas" class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+
+            <!-- Tabla -->
+            <div *ngIf="!isLoadingReservas" class="table-responsive">
+              <table class="table table-hover table-bordered">
+                <thead class="table-light">
+                  <tr>
+                    <th><i class="bi bi-hash"></i> ID</th>
+                    <th><i class="bi bi-person"></i> Usuario</th>
+                    <th><i class="bi bi-door-closed"></i> Sala</th>
+                    <th><i class="bi bi-calendar-event"></i> Fecha</th>
+                    <th><i class="bi bi-clock"></i> Hora</th>
+                    <th><i class="bi bi-chat-dots"></i> Descripción</th>
+                    <th class="text-center"><i class="bi bi-gear"></i> Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let reserva of reservasFiltradas; let i = index">
+                    <td>{{ reserva.id }}</td>
+                    <td>
+                      <span class="badge bg-info">{{ reserva.usuario }}</span>
+                    </td>
+                    <td>
+                      <strong>{{ reserva.sala }}</strong>
+                    </td>
+                    <td>{{ reserva.fecha }}</td>
+                    <td>{{ reserva.hora }}</td>
+                    <td>{{ reserva.descripcion || '-' }}</td>
+                    <td class="text-center">
+                      <button 
+                        type="button" 
+                        class="btn btn-sm btn-danger"
+                        (click)="cancelarReserva(reserva)"
+                        title="Cancelar reserva">
+                        <i class="bi bi-trash"></i> Cancelar
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Mensaje si no hay reservas -->
+              <div *ngIf="reservasFiltradas.length === 0" class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle"></i> No hay reservas que coincidan con los filtros
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: GESTIÓN DE USUARIOS -->
+      <div *ngIf="activeTab === 'usuarios'">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              Usuarios del Sistema: <span class="badge bg-primary">{{ usuarios.length }}</span>
+            </h5>
+
+            <!-- Loading spinner -->
+            <div *ngIf="isLoadingUsuarios" class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+
+            <!-- Tabla de usuarios -->
+            <div *ngIf="!isLoadingUsuarios && usuarios.length > 0" class="table-responsive">
+              <table class="table table-hover table-bordered">
+                <thead class="table-light">
+                  <tr>
+                    <th><i class="bi bi-hash"></i> ID</th>
+                    <th><i class="bi bi-person"></i> Usuario</th>
+                    <th><i class="bi bi-envelope"></i> Email</th>
+                    <th><i class="bi bi-shield"></i> Rol</th>
+                    <th class="text-center"><i class="bi bi-gear"></i> Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let usuario of usuarios">
+                    <td>{{ usuario.id }}</td>
+                    <td><strong>{{ usuario.username }}</strong></td>
+                    <td>{{ usuario.email }}</td>
+                    <td>
+                      <span 
+                        *ngFor="let rol of usuario.roles"
+                        class="badge"
+                        [ngClass]="getRolBadgeClass(rol)">
+                        {{ getRolLabel(rol) }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <button 
+                        type="button" 
+                        class="btn btn-sm btn-info me-2"
+                        (click)="cambiarRol(usuario)"
+                        title="Cambiar rol">
+                        <i class="bi bi-shuffle"></i> Cambiar Rol
+                      </button>
+                      <button 
+                        type="button" 
+                        class="btn btn-sm btn-danger"
+                        (click)="eliminarUsuario(usuario)"
+                        title="Eliminar usuario">
+                        <i class="bi bi-trash"></i> Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Mensaje si no hay usuarios -->
+            <div *ngIf="!isLoadingUsuarios && usuarios.length === 0" class="alert alert-info" role="alert">
+              <i class="bi bi-info-circle"></i> No hay usuarios registrados
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

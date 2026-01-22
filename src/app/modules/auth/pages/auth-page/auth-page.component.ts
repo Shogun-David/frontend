@@ -41,14 +41,21 @@ export class AuthPageComponent implements OnInit {
             ).subscribe({
                 next: (response) => {
                     console.log('Login successful', response);
-                    // Redirigir según el rol
-                    const role = this.authService.getUserRole();
-                    if (role === 'admin') {
-                        this.router.navigate(['/admin']);
-                    } else {
-                        this.router.navigate(['/reservas']);
-                    }
-                    this.isLoading = false;
+                    // Esperar un poco para que se guarde el rol en localStorage
+                    setTimeout(() => {
+                        // Obtener el rol después de que se haya guardado
+                        const role = this.authService.getUserRole();
+                        console.log('User role:', role);
+                        
+                        if (role === 'admin' || role === 'ADMIN') {
+                            console.log('Redirecting to admin dashboard');
+                            this.router.navigate(['/admin/reservas']);
+                        } else {
+                            console.log('Redirecting to user reservas');
+                            this.router.navigate(['/reservas']);
+                        }
+                        this.isLoading = false;
+                    }, 100);
                 },
                 error: (error) => {
                     console.error('Login failed', error);

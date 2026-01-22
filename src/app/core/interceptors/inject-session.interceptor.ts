@@ -20,7 +20,12 @@ export class InjectSessionInterceptor implements HttpInterceptor {
    * @returns Observable de la petición
    */
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const token = this.cookieService.get('token');
+    let token = this.cookieService.get('token');
+    
+    // Si no hay token en cookies, intentar desde localStorage
+    if (!token) {
+      token = localStorage.getItem('token') || '';
+    }
 
     // Si existe token, lo adjunta al header
     if (token) {

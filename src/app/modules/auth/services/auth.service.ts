@@ -19,7 +19,7 @@ export class AuthService {
   sendCredentials(email: string, password: string) : Observable<any> {
 
     const body = {
-        email,
+        username: email,
         password
     };
 
@@ -28,17 +28,25 @@ export class AuthService {
     return this.httpClient.post<any>(`${this.URL}/auth/login`, body).pipe(
         tap((data) => {
            console.log('Response data:', data);
-           const token = data.tokenSession || data.token || data.accessToken;
+           const token = data.token;
            if (token) {
              this.cookieService.set('token', token, 4, '/');
+             localStorage.setItem('token', token);
              console.log('Token saved:', token);
+             
+             // Extraer rol del JWT (formato: eyJhbGciOi...)
+             try {
+               const payload = JSON.parse(atob(token.split('.')[1]));
+               const role = payload.role || 'usuario';
+               localStorage.setItem('userRole', role);
+               localStorage.setItem('userEmail', email);
+             } catch (e) {
+               console.warn('Could not decode JWT:', e);
+               localStorage.setItem('userRole', 'usuario');
+               localStorage.setItem('userEmail', email);
+             }
            } else {
              console.error('Token not found in response:', data);
-           }
-           // Guardar rol si viene en la respuesta
-           if (data.user && data.user.rol) {
-             localStorage.setItem('userRole', data.user.rol);
-             localStorage.setItem('userEmail', data.user.email);
            }
         })
     );      
@@ -62,7 +70,8 @@ export class AuthService {
    * Verifica si el usuario es admin
    */
   isAdmin(): boolean {
-    return this.getUserRole() === 'admin';
+    const role = this.getUserRole();
+    return role === 'admin' || role === 'ADMIN';
   }
 
   /**
@@ -74,5 +83,26 @@ export class AuthService {
     localStorage.removeItem('userEmail');
     console.log('User logged out');
   }
+
+  /**
+   * Registrar nuevo usuario
+   */
+  registrar(usuarioData: any): Observable<any> {
+    const body = {
+      username: usuarioData.username,
+      email: usuarioData.email,
+      password: usuarioData.password,
+      roles: ['USUARIO']
+    };
+
+    console.log('Registering user', body);
+
+    return this.httpClient.post<any>(`${this.URL}/api/usuarios`, body).pipe(
+      tap((data) => {
+        console.log('User registered successfully', data);
+      })
+    );
+  }
 }
+
 

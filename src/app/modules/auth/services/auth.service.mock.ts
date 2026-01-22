@@ -113,4 +113,57 @@ export class AuthServiceMock {
     localStorage.removeItem('userEmail');
     console.log('User logged out');
   }
+
+  /**
+   * Registrar nuevo usuario (Mock)
+   * Solo acepta emails @usuario.com
+   */
+  registrar(usuarioData: any): Observable<any> {
+    // Validar email @usuario.com
+    if (!usuarioData.email.endsWith('@usuario.com')) {
+      return throwError(() => {
+        console.error('Mock Error: Email debe ser @usuario.com');
+        return new Error('El email debe terminar con @usuario.com');
+      });
+    }
+
+    // Validar que no exista
+    const existe = this.credentials.find(u => u.email === usuarioData.email);
+    if (existe) {
+      return throwError(() => {
+        console.error('Mock Error: Usuario ya existe');
+        return new Error('El usuario ya existe');
+      });
+    }
+
+    // Crear nuevo usuario
+    const nuevoUsuario = {
+      id: this.credentials.length + 1,
+      email: usuarioData.email,
+      password: usuarioData.password,
+      rol: 'usuario', // Siempre usuario
+      nombre: usuarioData.username
+    };
+
+    this.credentials.push(nuevoUsuario);
+
+    const response = {
+      success: true,
+      message: 'Usuario registrado exitosamente',
+      user: {
+        id: nuevoUsuario.id,
+        email: nuevoUsuario.email,
+        rol: nuevoUsuario.rol,
+        nombre: nuevoUsuario.nombre
+      }
+    };
+
+    return of(response).pipe(
+      delay(500),
+      tap((data) => {
+        console.log('Mock User registered:', data);
+      })
+    );
+  }
 }
+

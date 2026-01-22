@@ -1,0 +1,319 @@
+# Admin Panel - Requisitos de Backend
+
+## 📋 Endpoints Necesarios para Admin Panel
+
+### Para la sección de Usuarios
+
+#### 1. GET /api/usuarios
+```
+Propósito: Obtener lista de todos los usuarios (admin only)
+Método: GET
+Headers: Authorization: Bearer {token}
+Permisos: ADMIN
+
+Response (200):
+[
+  {
+    "id": 1,
+    "username": "usuario1",
+    "email": "usuario1@usuario.com",
+    "roles": ["USUARIO"]
+  },
+  {
+    "id": 2,
+    "username": "admin1",
+    "email": "admin1@usuario.com",
+    "roles": ["ADMIN"]
+  }
+]
+```
+
+#### 2. POST /api/usuarios (Admin Create)
+```
+Propósito: Crear nuevo usuario desde el admin panel
+Método: POST
+Headers: Authorization: Bearer {token}
+Permisos: ADMIN
+
+Body:
+{
+  "username": "nuevo_usuario",
+  "email": "nuevo_usuario@usuario.com",
+  "password": "password123",
+  "roles": ["USUARIO"]
+}
+
+Response (201):
+{
+  "id": 3,
+  "username": "nuevo_usuario",
+  "email": "nuevo_usuario@usuario.com",
+  "roles": ["USUARIO"]
+}
+```
+
+#### 3. PUT /api/usuarios/{id}
+```
+Propósito: Actualizar datos del usuario
+Método: PUT
+URL: /api/usuarios/1
+Headers: Authorization: Bearer {token}
+Permisos: ADMIN
+
+Body:
+{
+  "username": "usuario_modificado",
+  "email": "usuario_modificado@usuario.com",
+  "roles": ["USUARIO"]
+}
+
+Response (200):
+{
+  "id": 1,
+  "username": "usuario_modificado",
+  "email": "usuario_modificado@usuario.com",
+  "roles": ["USUARIO"]
+}
+```
+
+#### 4. PUT /api/usuarios/{id}/roles
+```
+Propósito: Cambiar rol del usuario (USUARIO ↔ ADMIN)
+Método: PUT
+URL: /api/usuarios/1/roles
+Headers: Authorization: Bearer {token}
+Permisos: ADMIN
+
+Body:
+{
+  "roles": ["ADMIN"]
+}
+
+Response (200):
+{
+  "id": 1,
+  "username": "usuario1",
+  "email": "usuario1@usuario.com",
+  "roles": ["ADMIN"]
+}
+```
+
+#### 5. DELETE /api/usuarios/{id}
+```
+Propósito: Eliminar un usuario
+Método: DELETE
+URL: /api/usuarios/1
+Headers: Authorization: Bearer {token}
+Permisos: ADMIN
+
+Response (204 No Content) o (200)
+```
+
+---
+
+### Para la sección de Reservas
+
+#### 1. GET /api/reservas
+```
+Propósito: Obtener lista de TODAS las reservas (admin only)
+Método: GET
+Headers: Authorization: Bearer {token}
+Permisos: ADMIN
+
+Response (200):
+[
+  {
+    "id": 1,
+    "sala": "Sala A",
+    "usuario": "usuario1",
+    "fecha": "2024-01-20",
+    "hora": "14:00",
+    "descripcion": "Reunión de equipo"
+  },
+  {
+    "id": 2,
+    "sala": "Sala B",
+    "usuario": "usuario2",
+    "fecha": "2024-01-20",
+    "hora": "15:00",
+    "descripcion": "Capacitación"
+  }
+]
+```
+
+#### 2. GET /api/reservas/{id}
+```
+Propósito: Obtener detalles de una reserva específica
+Método: GET
+URL: /api/reservas/1
+Headers: Authorization: Bearer {token}
+
+Response (200):
+{
+  "id": 1,
+  "sala": "Sala A",
+  "usuario": "usuario1",
+  "fecha": "2024-01-20",
+  "hora": "14:00",
+  "descripcion": "Reunión de equipo"
+}
+```
+
+#### 3. DELETE /api/reservas/{id}
+```
+Propósito: Cancelar/Eliminar una reserva
+Método: DELETE
+URL: /api/reservas/1
+Headers: Authorization: Bearer {token}
+Permisos: ADMIN
+
+Response (204 No Content) o (200 OK)
+```
+
+#### 4. GET /api/reservas/usuario/{usuarioId}
+```
+Propósito: Obtener reservas de un usuario específico
+Método: GET
+URL: /api/reservas/usuario/1
+Headers: Authorization: Bearer {token}
+Permisos: ADMIN
+
+Response (200):
+[
+  {
+    "id": 1,
+    "sala": "Sala A",
+    "usuario": "usuario1",
+    "fecha": "2024-01-20",
+    "hora": "14:00"
+  }
+]
+```
+
+---
+
+## 🔐 Validaciones Recomendadas en Backend
+
+### Para DELETE /api/usuarios/{id}
+- [ ] Solo ADMIN puede eliminar usuarios
+- [ ] No permitir autoeliminación (id del usuario != usuario actual)
+- [ ] Si la reserva fue de ese usuario, decidir qué hacer (cascade delete o mark as deleted)
+- [ ] Retornar 403 si no es admin
+- [ ] Retornar 404 si usuario no existe
+
+### Para PUT /api/usuarios/{id}/roles
+- [ ] Solo ADMIN puede cambiar roles
+- [ ] Validar que el rol existe (ADMIN, USUARIO)
+- [ ] Retornar 403 si no es admin
+
+### Para DELETE /api/reservas/{id}
+- [ ] Solo ADMIN puede cancelar cualquier reserva
+- [ ] Usuario puede cancelar solo sus propias reservas (validación en otro endpoint)
+- [ ] Retornar 403 si no tiene permisos
+- [ ] Retornar 404 si reserva no existe
+
+---
+
+## 📊 Tabla de Permisos
+
+| Endpoint | Método | Usuario | Admin | Público |
+|----------|--------|---------|-------|---------|
+| /api/usuarios | GET | ❌ | ✅ | ❌ |
+| /api/usuarios | POST | ❌ | ✅ | ❌ |
+| /api/usuarios/{id} | PUT | ❌ | ✅ | ❌ |
+| /api/usuarios/{id} | DELETE | ❌ | ✅ | ❌ |
+| /api/usuarios/{id}/roles | PUT | ❌ | ✅ | ❌ |
+| /api/reservas | GET | ❌ | ✅ | ❌ |
+| /api/reservas | POST | ✅ | ✅ | ❌ |
+| /api/reservas/{id} | GET | ✅* | ✅ | ❌ |
+| /api/reservas/{id} | PUT | ✅* | ✅ | ❌ |
+| /api/reservas/{id} | DELETE | ✅* | ✅ | ❌ |
+
+*Solo si es dueño de la reserva
+
+---
+
+## 🚨 Errores Esperados
+
+### 401 Unauthorized
+```json
+{
+  "error": "Token inválido o expirado"
+}
+```
+
+### 403 Forbidden
+```json
+{
+  "error": "No tienes permisos para acceder a este recurso"
+}
+```
+
+### 404 Not Found
+```json
+{
+  "error": "Usuario no encontrado"
+}
+```
+
+### 400 Bad Request
+```json
+{
+  "error": "Email ya está registrado"
+}
+```
+
+---
+
+## ✅ Checklist de Implementación Backend
+
+- [ ] GET /api/usuarios retorna lista de usuarios (admin only)
+- [ ] POST /api/usuarios crea usuario (admin only)
+- [ ] PUT /api/usuarios/{id} actualiza usuario (admin only)
+- [ ] DELETE /api/usuarios/{id} elimina usuario (admin only)
+- [ ] PUT /api/usuarios/{id}/roles cambia rol
+- [ ] GET /api/reservas retorna todas las reservas (admin only)
+- [ ] DELETE /api/reservas/{id} cancela reserva
+- [ ] Todas las rutas /api validar token JWT
+- [ ] Todas las rutas /api validar permisos ADMIN
+- [ ] Retornar 401 si token inválido/expirado
+- [ ] Retornar 403 si permisos insuficientes
+
+---
+
+## 🧪 Testing del Admin Panel
+
+### Test 1: Ver lista de usuarios
+1. Login como admin
+2. Ir a /admin/usuarios
+3. Debe cargar tabla con todos los usuarios
+
+### Test 2: Crear usuario desde admin
+1. Click "Crear Nuevo Usuario"
+2. Llenar formulario
+3. Click Guardar
+4. Debe aparecer en tabla
+
+### Test 3: Cambiar rol de usuario
+1. Click en botón de rol de un usuario
+2. Confirmar cambio
+3. Rol debe cambiar en tabla
+
+### Test 4: Eliminar usuario
+1. Click en botón Eliminar
+2. Confirmar
+3. Debe desaparecer de tabla
+
+### Test 5: Ver todas las reservas
+1. Ir a /admin/reservas
+2. Debe cargar tabla con todas las reservas
+3. Incluir usuario que hizo reserva
+
+### Test 6: Filtrar reservas
+1. Ingresa filtro (usuario, sala, fecha)
+2. Tabla debe actualizar en tiempo real
+
+### Test 7: Cancelar reserva
+1. Click en Cancelar
+2. Confirmar
+3. Debe desaparecer de tabla

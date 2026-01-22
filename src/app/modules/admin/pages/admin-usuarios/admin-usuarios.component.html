@@ -1,4 +1,185 @@
-<div class="container-fluid">
-  <h2>Lista de Usuarios</h2>
-  <p>Componente para gestionar usuarios del sistema (solo admin)</p>
+<div class="container-fluid mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Gestión de Usuarios</h2>
+      
+      <!-- Mensajes de estado -->
+      <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+      </div>
+      
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+      </div>
+
+      <!-- Botón para crear nuevo usuario -->
+      <div class="mb-3">
+        <button 
+          *ngIf="!showForm"
+          type="button" 
+          class="btn btn-primary"
+          (click)="mostrarNuevoUsuario()"
+          [disabled]="isLoading">
+          <i class="bi bi-plus-lg"></i> Crear Nuevo Usuario
+        </button>
+      </div>
+
+      <!-- Formulario -->
+      <div *ngIf="showForm" class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ modoEdicion ? 'Editar Usuario' : 'Crear Nuevo Usuario' }}</h5>
+          
+          <form [formGroup]="formUsuario" (ngSubmit)="guardarUsuario()">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="username" class="form-label">Username</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="username"
+                    formControlName="username"
+                    [class.is-invalid]="formUsuario.get('username')?.invalid && formUsuario.get('username')?.touched"
+                    [disabled]="modoEdicion">
+                  <div class="invalid-feedback" *ngIf="formUsuario.get('username')?.invalid && formUsuario.get('username')?.touched">
+                    Username requerido (mín. 3 caracteres)
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input 
+                    type="email" 
+                    class="form-control" 
+                    id="email"
+                    formControlName="email"
+                    [class.is-invalid]="formUsuario.get('email')?.invalid && formUsuario.get('email')?.touched">
+                  <div class="invalid-feedback" *ngIf="formUsuario.get('email')?.invalid && formUsuario.get('email')?.touched">
+                    Email válido requerido
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="password" class="form-label">Contraseña</label>
+                  <input 
+                    type="password" 
+                    class="form-control" 
+                    id="password"
+                    formControlName="password"
+                    [class.is-invalid]="formUsuario.get('password')?.invalid && formUsuario.get('password')?.touched">
+                  <div class="invalid-feedback" *ngIf="formUsuario.get('password')?.invalid && formUsuario.get('password')?.touched">
+                    Contraseña requerida (mín. 6 caracteres)
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="roles" class="form-label">Rol</label>
+                  <select 
+                    class="form-select" 
+                    id="roles"
+                    formControlName="roles">
+                    <option value="USUARIO">Usuario Regular</option>
+                    <option value="ADMIN">Administrador</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button 
+                type="submit" 
+                class="btn btn-success"
+                [disabled]="!formUsuario.valid || isLoading">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                {{ modoEdicion ? 'Actualizar' : 'Crear' }} Usuario
+              </button>
+              <button 
+                type="button" 
+                class="btn btn-secondary"
+                (click)="cancelar()">
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tabla de usuarios -->
+      <div class="card">
+        <div class="card-body">
+          <div *ngIf="isLoading && usuarios.length === 0" class="text-center py-5">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+          </div>
+
+          <div *ngIf="!isLoading && usuarios.length === 0" class="text-center py-5">
+            <p>No hay usuarios registrados</p>
+          </div>
+
+          <table *ngIf="usuarios.length > 0" class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let usuario of usuarios">
+                <td>{{ usuario.id }}</td>
+                <td>{{ usuario.username }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>
+                  <span 
+                    *ngFor="let rol of usuario.roles"
+                    class="badge"
+                    [ngClass]="getRolBadgeClass(rol)">
+                    {{ getRolLabel(rol) }}
+                  </span>
+                </td>
+                <td>
+                  <button 
+                    type="button" 
+                    class="btn btn-sm btn-warning me-2"
+                    (click)="editarUsuario(usuario)"
+                    title="Editar usuario">
+                    <i class="bi bi-pencil"></i> Editar
+                  </button>
+                  
+                  <button 
+                    type="button" 
+                    class="btn btn-sm btn-info me-2"
+                    (click)="cambiarRol(usuario)"
+                    title="Cambiar rol">
+                    <i class="bi bi-shuffle"></i> Cambiar Rol
+                  </button>
+                  
+                  <button 
+                    type="button" 
+                    class="btn btn-sm btn-danger"
+                    (click)="eliminarUsuario(usuario)"
+                    title="Eliminar usuario">
+                    <i class="bi bi-trash"></i> Eliminar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

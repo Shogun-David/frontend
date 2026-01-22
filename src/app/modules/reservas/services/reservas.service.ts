@@ -20,6 +20,26 @@ export class ReservasService {
 
   constructor(private http: HttpClient) {}
 
+  getMisReservas(
+    estado?: string,
+    page: number = 1,
+    size: number = 10
+  ): Observable<PageResponse<ReservaModel>> {
+
+    let params = new HttpParams()
+      .set('page', page)
+      .set('size', size);
+
+    if (estado) {
+      params = params.set('estado', estado);
+    }
+
+    return this.http.get<PageResponse<ReservaModel>>(
+      `${this.API_URL}/mis-reservas`,
+      { params }
+    );
+  }
+
   getByUser(
     userId: number,
     estado?: string,

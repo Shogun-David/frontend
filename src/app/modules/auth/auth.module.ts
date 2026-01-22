@@ -6,15 +6,17 @@ import { RouterModule } from '@angular/router';
 import { AuthRoutingModule } from './auth-routing.module';
 import { SharedModule } from '@shared/shared.module';
 import { AuthPageComponent } from './pages/auth-page/auth-page.component';
+import { RegisterComponent } from './pages/register/register.component';
 import { AuthService } from './services/auth.service';
 import { AuthServiceMock } from './services/auth.service.mock';
 
 // Cambiar a AuthService cuando tengas el backend Java
-const useAuthServiceMock = true; // Cambiar a false para usar backend real
+const useAuthServiceMock = false; // Cambiar a false para usar backend real
 
 @NgModule({
   declarations: [
-    AuthPageComponent
+    AuthPageComponent,
+    RegisterComponent
   ],
   imports: [
     CommonModule,

@@ -26,8 +26,6 @@ export class ReservasPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    
-    console.log('cargar reservas');
     this.cargarReservas();
   }
 
@@ -35,14 +33,18 @@ export class ReservasPageComponent implements OnInit {
     this.loading = true;
 
     this.reservasService
-      .getByUser(this.userId, this.estadoFiltro, this.page, this.size)
+      .getMisReservas(this.estadoFiltro, this.page, this.size)
       .subscribe({
         next: res => {
           this.reservas = res.content;
           this.total = res.totalElements;
           this.loading = false;
+          console.log('Mis reservas cargadas:', this.reservas);
         },
-        error: () => this.loading = false
+        error: (error) => {
+          console.error('Error al cargar reservas:', error);
+          this.loading = false;
+        }
       });
 
   }
