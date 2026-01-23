@@ -12,9 +12,6 @@ export class CalendarioPageComponent implements OnInit {
   eventos: EventInput[] = [];
   loading = false;
 
-  // 🔴 luego vendrá del JWT
-  userId = 1;
-
   constructor(private reservasService: ReservasService) {}
 
   ngOnInit(): void {
@@ -24,7 +21,7 @@ export class CalendarioPageComponent implements OnInit {
   cargarCalendarioUsuario(): void {
     this.loading = true;
 
-    this.reservasService.getReservasCalendario(this.userId)
+    this.reservasService.getReservasByUserForCalendar()
       .subscribe({
         next: res => {
           this.eventos = res.content.map((r: any) => ({

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthUser } from '@core/models/auth.user';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { Observable } from 'rxjs';
@@ -12,12 +13,16 @@ export class SlideBarComponent {
 
   user$: Observable<AuthUser | null>;
 
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.user$ = this.authService.currentUser$;
   }
 
-  logout() {
+  logout(): void {
     this.authService.logout();
+    this.router.navigate(['/auth']);
   }
 
   isAdmin(user: AuthUser): boolean {

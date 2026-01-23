@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ReservasService } from '../../services/reservas.service';
 import { SalaModel } from '@core/models/sala.model';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -15,12 +15,20 @@ export class CrearReservaModalComponent implements OnInit {
   salas: SalaModel[] = [];
   loading = false;
 
-  form = this.fb.group({
-    idSala: ['', Validators.required],
-    fechaInicio: ['', Validators.required],
-    fechaFin: ['', Validators.required],
-    observacion: ['']
-  });
+  minDateTime!: string;
+  minFechaFin!: string;
+
+  form = this.fb.group(
+    {
+      idSala: ['', Validators.required],
+      fechaInicio: ['', Validators.required],
+      fechaFin: ['', Validators.required],
+      observacion: ['']
+    },
+    {
+      validators: this.fechaFinMayorQueInicio
+    }
+  );
 
   constructor(
     private fb: FormBuilder,
@@ -31,7 +39,25 @@ export class CrearReservaModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.setMinDateTime();
     this.cargarSalas();
+  }
+
+  private setMinDateTime(): void {
+    const now = new Date();
+    const formatted = now.toISOString().slice(0, 16);
+
+    this.minDateTime = formatted;
+    this.minFechaFin = formatted;
+  }
+
+  onFechaInicioChange(): void {
+    const fechaInicio = this.form.get('fechaInicio')?.value;
+
+    if (fechaInicio) {
+      this.minFechaFin = fechaInicio;
+      this.form.get('fechaFin')?.setValue('');
+    }
   }
 
   cargarSalas(): void {
@@ -58,5 +84,19 @@ export class CrearReservaModalComponent implements OnInit {
 
   cancelar(): void {
     this.activeModal.dismiss();
+  }
+
+  // =========================
+  // VALIDADOR PERSONALIZADO
+  // =========================
+  private fechaFinMayorQueInicio(control: AbstractControl): ValidationErrors | null {
+    const inicio = control.get('fechaInicio')?.value;
+    const fin = control.get('fechaFin')?.value;
+
+    if (!inicio || !fin) return null;
+
+    return new Date(fin) > new Date(inicio)
+      ? null
+      : { fechaFinInvalida: true };
   }
 }

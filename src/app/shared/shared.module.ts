@@ -8,6 +8,7 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 import { FormsModule } from '@angular/forms';
 import { ConfirmModalComponent } from './components/confirmar-modal/confirmar-modal.component';
 import { ToastComponent } from './components/toast/toast.component';
+import { PaginationComponent } from './components/pagination/pagination.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { ToastComponent } from './components/toast/toast.component';
     SlideBarComponent,
     CalendarioReservasComponent,
     ConfirmModalComponent,
-    ToastComponent
+    ToastComponent,
+    PaginationComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +28,8 @@ import { ToastComponent } from './components/toast/toast.component';
     SlideBarComponent,
     CalendarioReservasComponent,
     ConfirmModalComponent,
-    ToastComponent
+    ToastComponent,
+    PaginationComponent
   ]
 })
 export class SharedModule { }

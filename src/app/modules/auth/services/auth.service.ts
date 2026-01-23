@@ -15,7 +15,7 @@ interface LoginResponse {
 })
 export class AuthService {
 
-  private readonly API_URL = 'http://localhost:8090/auth';
+  private readonly API_URL = 'http://localhost:8080/auth';
 
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
@@ -48,6 +48,14 @@ export class AuthService {
       username: response.username,
       roles: response.roles
     });
+  }
+
+  registrar(data: {
+    username: string;
+    email: string;
+    password: string;
+  }): Observable<any> {
+    return this.http.post(`${this.API_URL}/register`, data);
   }
 
   // 🔁 RESTAURAR SESIÓN AL REFRESH

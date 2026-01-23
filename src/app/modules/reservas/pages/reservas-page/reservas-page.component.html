@@ -92,5 +92,12 @@
     </table>
   </div>
 
+  <app-pagination
+    [page]="page"
+    [size]="size"
+    [total]="total"
+    (pageChange)="cambiarPagina($event)">
+  </app-pagination>
+
 
 </div>

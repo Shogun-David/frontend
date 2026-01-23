@@ -15,12 +15,9 @@ export class ReservasPageComponent implements OnInit {
   reservas: ReservaModel[] = [];
   estadoFiltro: string = '';
   page = 1;
-  size = 10;
+  size = 8;
   total = 0;
   loading = false;
-
-  // 🔴 luego lo obtendrás del JWT
-  userId = 1;
 
   eventos: EventInit[] = [];
 
@@ -31,8 +28,6 @@ export class ReservasPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    
-    console.log('cargar reservas');
     this.cargarReservas();
   }
 
@@ -40,7 +35,7 @@ export class ReservasPageComponent implements OnInit {
     this.loading = true;
 
     this.reservasService
-      .getByUser(this.userId, this.estadoFiltro, this.page, this.size)
+      .getByUser(this.estadoFiltro, this.page, this.size)
       .subscribe({
         next: res => {
           this.reservas = res.content;

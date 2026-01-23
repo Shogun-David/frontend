@@ -57,7 +57,13 @@
 
         <tbody>
           <tr *ngFor="let r of reservas">
-            <td>{{ r.usuario }}</td>
+            <td>
+              <div class="d-flex align-items-center">
+                <i class="bi bi-person-circle me-2 text-primary"></i>
+                <span>{{ r.usuario }}</span>
+              </div>
+            </td>
+
             <td>{{ r.sala }}</td>
             <td>{{ r.fechaInicio | date:'dd/MM/yyyy HH:mm' }}</td>
             <td>{{ r.fechaFin | date:'dd/MM/yyyy HH:mm' }}</td>
@@ -95,6 +101,12 @@
       </table>
     </div>
   </div>
+  <app-pagination
+    [page]="page"
+    [size]="size"
+    [total]="total"
+    (pageChange)="cambiarPagina($event)">
+  </app-pagination>
 
 
 </div>

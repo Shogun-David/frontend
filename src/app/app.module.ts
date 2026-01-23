@@ -8,6 +8,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '@shared/shared.module';
 import { HttpErrorInterceptor } from '@core/interceptors/http-error.interceptor';
+import { InjectSessionInterceptor } from '@core/interceptors/inject-session.interceptor';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,11 @@ import { HttpErrorInterceptor } from '@core/interceptors/http-error.interceptor'
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InjectSessionInterceptor,
       multi: true
     }
   ],

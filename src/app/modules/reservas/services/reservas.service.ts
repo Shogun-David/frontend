@@ -16,10 +16,9 @@ export class ReservasService {
   constructor(private http: HttpClient) {}
 
   getByUser(
-    userId: number,
     estado?: string,
     page: number = 1,
-    size: number = 10
+    size: number = 8
   ): Observable<PageResponse<ReservaModel>> {
 
     let params = new HttpParams()
@@ -31,7 +30,7 @@ export class ReservasService {
     }
 
     return this.http.get<PageResponse<ReservaModel>>(
-      `${this.API_URL}/by-user/${userId}`,
+      `${this.API_URL}/by-user`,
       { params }
     );
   }
@@ -39,7 +38,7 @@ export class ReservasService {
   getReservationsAdmin(
     estado?: string,
     page: number = 1,
-    size: number = 10
+    size: number = 8
   ): Observable<PageResponse<ReservaAdminModel>> {
 
     let params = new HttpParams()
@@ -63,9 +62,9 @@ export class ReservasService {
     );
   }
 
-  getReservasCalendario(userId: number) {
+  getReservasByUserForCalendar() {
     return this.http.get<any>(
-      `${this.API_URL}/by-user/${userId}`,
+      `${this.API_URL}/by-user`,
       { params: { page: 1, size: 10 } } // calendario = sin paginar
     );
   }
