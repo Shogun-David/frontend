@@ -1,7 +1,7 @@
-export interface SalaModel {
-  idSala: number;
-  nombre: string;
-  capacidad: number;
-  ubicacion: string;
-  estado: string;
+export interface Sala {
+    idSala: number;
+    nombre: string;
+    capacidad: number;
+    ubicacion: string;
+    estado: string;
 }

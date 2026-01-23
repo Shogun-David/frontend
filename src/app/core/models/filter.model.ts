@@ -1,4 +1,4 @@
-export interface FilterModel{
-    field: string;
-    value: string;
+export interface FilterModel {
+  field: string;
+  value: string;
 }

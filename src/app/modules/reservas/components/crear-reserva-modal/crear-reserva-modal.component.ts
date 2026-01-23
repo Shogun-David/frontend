@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ReservasService } from '../../services/reservas.service';
-import { SalaModel } from '@core/models/sala.model';
+import { Sala } from '@core/models/sala.model';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { SalasService } from '@modules/salas/service/salas.service';
 import { NotificationService } from '@core/services/notification.service';
+import { SalaService } from '@modules/sala/services/sala.service';
+import { PaginationModel } from '@core/models/pagination.model';
 
 @Component({
   selector: 'app-crear-reserva-modal',
@@ -12,7 +13,7 @@ import { NotificationService } from '@core/services/notification.service';
 })
 export class CrearReservaModalComponent implements OnInit {
 
-  salas: SalaModel[] = [];
+  salas: Sala[] = [];
   loading = false;
 
   minDateTime!: string;
@@ -33,10 +34,10 @@ export class CrearReservaModalComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private reservasService: ReservasService,
-    private salasService: SalasService,
+    private salasService: SalaService,
     public activeModal: NgbActiveModal,
     private notification: NotificationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.setMinDateTime();
@@ -61,7 +62,15 @@ export class CrearReservaModalComponent implements OnInit {
   }
 
   cargarSalas(): void {
-    this.salasService.obtenerSalasDisponibles()
+    const body: PaginationModel = {
+      pageNumber: 0,          // 👈 OJO: backend usa base 0
+      rowsPerPage: 5,
+      filters: [
+        { field: 'estado', value: 'D' }
+      ],
+      sorts: []
+    };
+    this.salasService.getSalasPagination(body)
       .subscribe({
         next: res => this.salas = res.content
       });
