@@ -6,12 +6,14 @@ import { CalendarioAdminPageComponent } from './pages/calendario-admin-page/cale
 import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '@shared/shared.module';
+import { UsersPageComponent } from './pages/users-page/users-page.component';
 
 
 @NgModule({
   declarations: [
     CalendarioAdminPageComponent,
-    AdminPageComponent
+    AdminPageComponent,
+    UsersPageComponent
   ],
   imports: [
     CommonModule,

@@ -3,6 +3,7 @@ import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import esLocale from '@fullcalendar/core/locales/es';
 
 @Component({
   selector: 'app-calendario-reservas',
@@ -30,6 +31,7 @@ export class CalendarioReservasComponent implements OnChanges {
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
       },
+      locale: esLocale,
       events: this.eventos,
       height: 'auto'
     };

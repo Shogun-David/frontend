@@ -12,7 +12,7 @@ import { InjectSessionInterceptor } from '@core/interceptors/inject-session.inte
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,

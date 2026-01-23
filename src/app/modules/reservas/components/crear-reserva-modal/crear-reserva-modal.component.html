@@ -4,63 +4,78 @@
     Nueva Reserva
   </h5>
 
-  <button
-    type="button"
-    class="btn-close"
-    aria-label="Close"
-    (click)="cancelar()">
-  </button>
+  <button type="button" class="btn-close" (click)="cancelar()"></button>
 </div>
 
 <div class="modal-body">
   <form [formGroup]="form">
 
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="form-label">Sala</label>
-        <select class="form-select" formControlName="idSala">
-          <option value="">Seleccione</option>
-          <option *ngFor="let sala of salas" [value]="sala.idSala">
-            {{ sala.nombre }} - {{ sala.ubicacion }}
-            (Cap. {{ sala.capacidad }})
-          </option>
-        </select>
-      </div>
-
-      <div class="col-md-6">
-        <label class="form-label">Fecha inicio</label>
-        <input
-          type="datetime-local"
-          class="form-control"
-          formControlName="fechaInicio"
-          [min]="minDateTime"
-          (change)="onFechaInicioChange()">
-      </div>
+    <!-- SALA -->
+    <div class="mb-3">
+      <label class="form-label">Sala</label>
+      <select class="form-select" formControlName="idSala">
+        <option value="">Seleccione</option>
+        <option *ngFor="let sala of salas" [value]="sala.idSala">
+          {{ sala.nombre }} - {{ sala.ubicacion }}
+        </option>
+      </select>
     </div>
 
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="form-label">Fecha fin</label>
-        <input
-          type="datetime-local"
-          class="form-control"
-          formControlName="fechaFin"
-          [min]="minFechaFin">
+    <!-- CALENDARIO -->
+    <div class="mb-4" *ngIf="calendarOptions">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <label class="form-label mb-0">
+          Seleccione un rango disponible
+        </label>
+        <span class="badge bg-info text-dark" title="Haz click en el primer día y arrastra hasta el último.">
+          Cómo usar
+        </span>
       </div>
 
-      <div class="col-md-6">
-        <label class="form-label">Observación</label>
-        <input
-          type="text"
-          class="form-control"
-          formControlName="observacion">
-      </div>
+      <small class="text-muted d-block mb-2">
+        🔴 Días ocupados no disponibles. <br/>
+        🟢 Selecciona un rango arrastrando en el calendario.
+      </small>
+
+      <full-calendar class="fullcalendar" [options]="calendarOptions"></full-calendar>
     </div>
 
-    <!-- Mensaje de error fecha fin -->
-    <div
-      class="alert alert-danger py-1"
-      *ngIf="form.errors?.['fechaFinInvalida']">
+    <!-- FECHA INICIO -->
+    <div class="mb-3">
+      <label class="form-label">Fecha inicio</label>
+      <input
+        type="datetime-local"
+        class="form-control"
+        formControlName="fechaInicio"
+        [min]="minFechaInicio"
+        readonly
+      >
+    </div>
+
+    <!-- FECHA FIN -->
+    <div class="mb-3">
+      <label class="form-label">Fecha fin</label>
+      <input
+        type="datetime-local"
+        class="form-control"
+        formControlName="fechaFin"
+        readonly
+      >
+    </div>
+
+    <!-- OBSERVACIÓN -->
+    <div class="mb-3">
+      <label class="form-label">Observación</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="observacion"
+        placeholder="Ej. Reunión mensual, capacitacion, etc."
+      >
+    </div>
+
+    <!-- ERROR -->
+    <div class="alert alert-danger py-1" *ngIf="form.errors?.['fechaFinInvalida']">
       La fecha fin debe ser mayor que la fecha inicio
     </div>
 
@@ -68,16 +83,8 @@
 </div>
 
 <div class="modal-footer">
-  <button
-    class="btn btn-secondary"
-    (click)="cancelar()">
-    Cancelar
-  </button>
-
-  <button
-    class="btn btn-primary"
-    [disabled]="form.invalid || loading"
-    (click)="guardar()">
+  <button class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+  <button class="btn btn-primary" [disabled]="form.invalid || loading" (click)="guardar()">
     Guardar
   </button>
 </div>

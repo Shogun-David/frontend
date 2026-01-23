@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CrearReservaModalComponent } from './components/crear-reserva-modal/crear-reserva-modal.component';
 import { SharedModule } from "@shared/shared.module";
 import { CalendarioPageComponent } from './pages/calendario-page/calendario-page.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { CalendarioPageComponent } from './pages/calendario-page/calendario-page
     ReservasRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    FullCalendarModule
 ]
 })
 export class ReservasModule { }

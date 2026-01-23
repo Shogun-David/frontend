@@ -1,0 +1,20 @@
+/* Reduce el tamaño del calendario */
+.fullcalendar {
+  font-size: 12px; /* texto más pequeño */
+}
+
+.fc .fc-daygrid-day-number {
+  font-size: 12px;
+}
+
+/* Ajusta padding y márgenes */
+.fc .fc-daygrid-day-frame {
+  padding: 2px;
+}
+
+/* Reduce altura de celdas */
+.fc .fc-daygrid-day {
+  min-height: 60px;
+}
+
+

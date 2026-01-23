@@ -1,33 +1,39 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Page } from '@core/models/page.model';
 import { PaginationModel } from '@core/models/pagination.model';
 import { SalaModel } from '@core/models/sala.model';
-import { PageResponse } from '@core/models/page.response.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SalasService {
+export class SalaService {
 
-  private readonly API_URL = 'http://localhost:8080/salas';
+  private apiUrl = 'http://localhost:8080/salas';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  obtenerSalasDisponibles(): Observable<PageResponse<SalaModel>> {
-
-    const body: PaginationModel = {
-      pageNumber: 0,          // 👈 OJO: backend usa base 0
-      rowsPerPage: 5,
-      filters: [
-        { field: 'estado', value: 'D' }
-      ],
-      sorts: []
-    };
-
-    return this.http.post<PageResponse<SalaModel>>(
-      `${this.API_URL}/pagination`,
-      body
+  getSalasPagination(pagination: PaginationModel): Observable<Page<SalaModel>> {
+    return this.http.post<Page<SalaModel>>(
+      `${this.apiUrl}/pagination`,
+      pagination
     );
   }
+
+  createSala(payload: SalaModel): Observable<SalaModel> {
+    return this.http.post<SalaModel>(this.apiUrl, payload);
+  }
+
+  updateSala(id: number, payload: SalaModel): Observable<SalaModel> {
+    return this.http.put<SalaModel>(`${this.apiUrl}/${id}`, payload);
+  }
+
+  toggleEstadoSala(id: number): Observable<SalaModel> {
+    return this.http.patch<SalaModel>(
+      `${this.apiUrl}/${id}/estado`,
+      null
+    );
+  }
+
 }

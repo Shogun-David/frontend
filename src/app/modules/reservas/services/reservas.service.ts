@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PageResponse } from '@core/models/page.response.model';
 import { ReservaAdminModel } from '@core/models/reserva.admin.model';
+import { ReservaDisponibilidad } from '@core/models/reserva.disponibilidad';
 import { ReservaModel } from '@core/models/reserva.model';
 import { Observable } from 'rxjs';
 
@@ -75,4 +76,17 @@ export class ReservasService {
       request
     );
   }
+
+  getDisponibilidadSala(
+    salaId: number,
+    year: number,
+    month: number
+  ): Observable<ReservaDisponibilidad[]> {
+
+    return this.http.get<ReservaDisponibilidad[]>(
+      `${this.API_URL}/disponibilidad`,
+      { params: { salaId, year, month } }
+    );
+  }
+
 }

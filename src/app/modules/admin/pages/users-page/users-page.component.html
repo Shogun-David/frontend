@@ -1,0 +1,72 @@
+<div class="container my-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-primary">Listado de Usuarios</h2>
+
+    <div class="input-group w-50">
+      <span class="input-group-text bg-white border-0">
+        <i class="bi bi-search"></i>
+      </span>
+      <input
+        [(ngModel)]="filtro"
+        class="form-control border-0"
+        type="text"
+        placeholder="Buscar por usuario, email o estado..."
+      />
+    </div>
+  </div>
+
+  <div class="card shadow-sm rounded-3">
+    <div class="card-body p-0">
+
+      <table class="table table-borderless mb-0">
+        <thead class="bg-light">
+          <tr>
+            <th scope="col">Usuario</th>
+            <th scope="col">Email</th>
+            <th scope="col">Roles</th>
+            <th scope="col">Estado</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let user of buscarUsuario()" class="table-row-hover">
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="avatar me-3">
+                  {{ user.username.charAt(0).toUpperCase() }}
+                </div>
+                <div>
+                  <div class="fw-bold">{{ user.username }}</div>
+                  <div class="text-muted small">ID: {{ user.idUsuario }}</div>
+                </div>
+              </div>
+            </td>
+
+            <td class="text-muted">{{ user.email }}</td>
+
+            <td>
+              <span
+                class="badge bg-info text-dark me-1"
+                *ngFor="let r of user.roles">
+                {{ r }}
+              </span>
+            </td>
+
+            <td>
+              <span
+                class="badge"
+                [ngClass]="user.estado === 'A' ? 'bg-success' : 'bg-danger'">
+                {{ user.estado === 'A' ? 'ACTIVO' : 'INACTIVO' }}
+              </span>
+            </td>
+
+           
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+</div>

@@ -51,7 +51,6 @@
             <th>Inicio</th>
             <th>Fin</th>
             <th>Estado</th>
-            <th class="text-center">Acciones</th>
           </tr>
         </thead>
 
@@ -80,16 +79,6 @@
               </span>
             </td>
 
-            <td class="text-center">
-              <button
-                *ngIf="r.estado === 'ACTIVA'"
-                class="btn btn-sm btn-outline-danger"
-                (click)="cancelar(r)"
-                title="Cancelar reserva"
-              >
-                <i class="uil uil-times-circle"></i>
-              </button>
-            </td>
           </tr>
 
           <tr *ngIf="reservas.length === 0">
