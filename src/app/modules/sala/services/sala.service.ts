@@ -29,4 +29,11 @@ export class SalaService {
     return this.http.put<Sala>(`${this.apiUrl}/${id}`, payload);
   }
 
+  toggleEstadoSala(id: number): Observable<Sala> {
+    return this.http.patch<Sala>(
+      `${this.apiUrl}/${id}/estado`,
+      null
+    );
+  }
+
 }

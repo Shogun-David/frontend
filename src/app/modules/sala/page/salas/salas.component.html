@@ -81,12 +81,14 @@
                     </td>
 
                     <td class="text-center">
-                        <button (click)="openEditModal(sala)" class="btn btn-secondary">
-                            Actualizar
-                        </button>
-                        <button class="btn btn-warning">
-                            Deshabilitar
-                        </button>
+                        <div class="d-flex justify-content-center gap-2">
+                            <button (click)="openEditModal(sala)" class="btn btn-secondary">
+                                Actualizar
+                            </button>
+                            <button class="btn btn-warning" (click)="cancelar(sala)">
+                                Cambiar estado
+                            </button>
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -102,30 +104,9 @@
         </table>
     </div>
     <!-- Paginación -->
-    <nav class="mt-3" *ngIf="totalPages > 1">
-        <ul class="pagination justify-content-end">
-
-            <!-- Anterior -->
-            <li class="page-item" [class.disabled]="paginationState.pageNumber === 0">
-                <button class="page-link" (click)="goToPage(paginationState.pageNumber - 1)">
-                    Anterior
-                </button>
-            </li>
-
-            <!-- Números de página -->
-            <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
-                [class.active]="i === paginationState.pageNumber">
-                <button class="page-link" (click)="goToPage(i)">
-                    {{ i + 1 }}
-                </button>
-            </li>
-
-            <!-- Siguiente -->
-            <li class="page-item" [class.disabled]="paginationState.pageNumber === totalPages - 1">
-                <button class="page-link" (click)="goToPage(paginationState.pageNumber + 1)">
-                    Siguiente
-                </button>
-            </li>
-        </ul>
-    </nav>
+    <app-pagination 
+        [totalPages]="totalPages" 
+        [currentPage]="paginationState.pageNumber"
+        (pageChange)="onPageChange($event)">
+    </app-pagination>
 </div>

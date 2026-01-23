@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { PaginationModel } from '@core/models/pagination.model';
 import { Sala } from '@core/models/sala.model';
+import { NotificationService } from '@core/services/notification.service';
 import { SalaService } from '@modules/sala/services/sala.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ConfirmModalComponent } from '@shared/components/confirmar-modal/confirmar-modal.component';
 
 @Component({
   selector: 'app-salas',
@@ -26,7 +29,11 @@ export class SalasComponent {
   showModal = false;
   selectedSala?: Sala;
 
-  constructor(private salaService: SalaService) { }
+  constructor(
+    private salaService: SalaService,
+    private modalService: NgbModal,
+    private notificationService: NotificationService
+  ) { }
 
   ngOnInit(): void {
     this.loadSalas();
@@ -69,6 +76,32 @@ export class SalasComponent {
       });
   }
 
+  cancelar(sala: Sala): void {
+
+    const modalRef = this.modalService.open(ConfirmModalComponent, {
+      centered: true,
+      backdrop: 'static'
+    });
+
+    modalRef.componentInstance.title = 'Cambiar estado';
+    modalRef.componentInstance.message =
+      '¿Deseas cambiar el estado de la Sala?';
+    modalRef.componentInstance.confirmText = 'Sí, cambiar';
+    modalRef.componentInstance.cancelText = 'No';
+    modalRef.componentInstance.confirmButtonClass = 'btn-danger';
+
+    modalRef.closed.subscribe(confirmado => {
+      if (confirmado) {
+        this.salaService
+          .toggleEstadoSala(sala.idSala)
+          .subscribe(() => {
+            this.notificationService.success('El estado de la sala ha cambiado exitosamente');
+            this.loadSalas();
+          });
+      }
+    });
+  }
+
 
   onEstadoChange(event: Event): void {
     this.paginationState.selectedEstado = (event.target as HTMLSelectElement).value;
@@ -77,14 +110,11 @@ export class SalasComponent {
   }
 
 
-  goToPage(page: number): void {
-    if (page < 0 || page >= this.totalPages) {
-      return;
-    }
-
+  onPageChange(page: number): void {
     this.paginationState.pageNumber = page;
     this.loadSalas();
   }
+
 
   changeSort(column: string): void {
     if (this.paginationState.sortColumn === column) {

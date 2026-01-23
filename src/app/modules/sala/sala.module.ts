@@ -5,12 +5,14 @@ import { SalaRoutingModule } from './sala-routing.module';
 import { SalasComponent } from './page/salas/salas.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormSalaComponent } from './components/form-sala/form-sala.component';
+import { PaginationComponent } from './components/pagination/pagination.component';
 
 
 @NgModule({
   declarations: [
     SalasComponent,
-    FormSalaComponent
+    FormSalaComponent,
+    PaginationComponent
   ],
   imports: [
     CommonModule,
