@@ -25,11 +25,13 @@
   <ul class="nav nav-pills flex-column mb-auto">
 
     <li class="nav-item mb-1">
-      <a routerLink="/reservas"
-         routerLinkActive="active"
-         class="nav-link text-white d-flex align-items-center">
+     <a routerLink="/reservas"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-link text-white">
         <i class="bi bi-journal-text me-3 fs-5"></i> Mis Reservas
       </a>
+
     </li>
 
    
@@ -44,33 +46,37 @@
     </li>
 
     <!-- BOTONES SOLO ADMIN -->
-    <ng-container *ngIf="user$ | async as user">
-      <li class="nav-item" *ngIf="isAdmin(user)">
-        <a routerLink="/salas"
-          routerLinkActive="active"
-          class="nav-link text-white d-flex align-items-center">
-          <i class="bi bi-building me-3 fs-5"></i> Salas
-        </a>
-      </li>
+  <ng-container *ngIf="user$ | async as user">
+    <ng-container *ngIf="isAdmin(user)">
 
-      <li class="nav-item mb-1">
-        <a routerLink="/admin/usuarios"
-           routerLinkActive="active"
-           class="nav-link text-white d-flex align-items-center">
-          <i class="bi bi-people me-3 fs-5"></i> Usuarios
-        </a>
-      </li>
+    <li class="nav-item">
+      <a routerLink="/salas"
+        routerLinkActive="active"
+        class="nav-link text-white">
+        <i class="bi bi-building me-3"></i> Salas
+      </a>
+    </li>
 
-      <li class="nav-item mb-1">
-        <a routerLink="/admin"
-           routerLinkActive="active"
-           [routerLinkActiveOptions]="{exact: true}"
-           class="nav-link text-white d-flex align-items-center">
-          <i class="bi bi-calendar3 me-3 fs-5"></i> Reservas Globales
-        </a>
-      </li>
-      
-    </ng-container>
+    <li class="nav-item">
+      <a routerLink="/admin/usuarios"
+        routerLinkActive="active"
+        class="nav-link text-white">
+        <i class="bi bi-people me-3"></i> Usuarios
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a routerLink="/admin"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-link text-white">
+        <i class="bi bi-calendar3 me-3"></i> Reservas Globales
+      </a>
+    </li>
+
+  </ng-container>
+</ng-container>
+
 
   </ul>
 
