@@ -1,13 +1,28 @@
-<div class="container-fluid">
+<div class="container-fluid py-4">
 
-  <div class="mb-3">
-    <h4 class="mb-0">
-      <i class="uil uil-calendar-alt me-2"></i>
-      Mis Reservas
-    </h4>
-    <small class="text-muted">
-      Visualización de reservas en calendario
-    </small>
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+      <!-- Header -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+          <h4 class="mb-1 fw-bold text-primary">
+            <i class="uil uil-calendar-alt me-2"></i>Mis Reservas
+          </h4>
+          <p class="text-muted mb-0">Visualización de reservas en calendario</p>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2 text-muted">Cargando calendario...</p>
+      </div>
+
+      <!-- Calendario -->
+      <app-calendario-reservas *ngIf="!loading" [eventos]="eventos"></app-calendario-reservas>
+    </div>
   </div>
 
   <!-- Filtros -->

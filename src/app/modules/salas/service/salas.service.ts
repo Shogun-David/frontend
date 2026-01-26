@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Page } from '@core/models/page.model';
+import { PageResponse } from '@core/models/page.response.model';
 import { PaginationModel } from '@core/models/pagination.model';
 import { SalaModel } from '@core/models/sala.model';
 import { Observable } from 'rxjs';
@@ -14,8 +14,8 @@ export class SalaService {
 
   constructor(private http: HttpClient) { }
 
-  getSalasPagination(pagination: PaginationModel): Observable<Page<SalaModel>> {
-    return this.http.post<Page<SalaModel>>(
+  getSalasPagination(pagination: PaginationModel): Observable<PageResponse<SalaModel>> {
+    return this.http.post<PageResponse<SalaModel>>(
       `${this.apiUrl}/pagination`,
       pagination
     );
