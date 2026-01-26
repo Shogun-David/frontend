@@ -1,0 +1,13 @@
+.fc-custom-event {
+  line-height: 1.2;
+}
+
+.fc-custom-event .fc-title {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.fc-custom-event .fc-time {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}

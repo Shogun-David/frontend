@@ -2,15 +2,22 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ReservasPageComponent } from './pages/reservas-page/reservas-page.component';
 import { CalendarioPageComponent } from './pages/calendario-page/calendario-page.component';
+import { authGuard } from '@core/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: ReservasPageComponent
-  },
-  {
-    path: 'calendario/user',
-    component: CalendarioPageComponent
+    canActivateChild: [authGuard],
+    children: [
+      {
+        path: '',
+        component: ReservasPageComponent
+      },
+      {
+        path: 'calendario',
+        component: CalendarioPageComponent
+      }
+    ]
   }
 ];
 

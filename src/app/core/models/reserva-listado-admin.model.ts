@@ -1,4 +1,4 @@
-export interface ReservaAdminModel{
+export interface ReservaListadoAdminModel{
     idReserva: number;
     usuario: string;
     sala: string;

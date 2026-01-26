@@ -1,7 +1,7 @@
 <div class="container-fluid">
 
   <!-- Header -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
       <h4 class="mb-0">
         <i class="uil uil-shield-check me-2"></i>
@@ -11,91 +11,139 @@
         Gestión global de reservas del sistema
       </small>
     </div>
-
-    <select
-      class="form-select w-auto"
-      [(ngModel)]="estadoFiltro"
-      (change)="filtrar()"
-    >
-      <option value="">Todos</option>
-      <option value="ACTIVA">ACTIVA</option>
-      <option value="CANCELADA">CANCELADA</option>
-      <option value="FINALIZADA">FINALIZADA</option>
-    </select>
   </div>
 
-  <!-- Stats -->
-  <div class="row mb-4">
-    <div class="col-md-4">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h6 class="text-muted">Total Reservas</h6>
-          <h3 class="mb-0">{{ total }}</h3>
-        </div>
+  <!-- Filtros -->
+  <div class="card mb-3 p-3 shadow-sm">
+    <div class="row g-2 align-items-end">
+
+      <!-- Usuario -->
+      <div class="col-md-4">
+        <label class="form-label">Usuario</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Buscar por usuario"
+          [(ngModel)]="usuarioFiltro"
+          (keyup.enter)="filtrar()"
+        />
       </div>
+
+      <!-- Sala -->
+      <div class="col-md-4">
+        <label class="form-label">Sala</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Buscar por sala"
+          [(ngModel)]="salaFiltro"
+          (keyup.enter)="filtrar()"
+        />
+      </div>
+
+      <!-- Estado -->
+      <div class="col-md-3">
+        <label class="form-label">Estado</label>
+        <select
+          class="form-select"
+          [(ngModel)]="estadoFiltro"
+          (change)="filtrar()"
+        >
+          <option value="">Todos</option>
+          <option value="ACTIVA">ACTIVA</option>
+          <option value="CANCELADA">CANCELADA</option>
+          <option value="FINALIZADA">FINALIZADA</option>
+        </select>
+      </div>
+
+      <!-- Botones -->
+      <div class="col-md-1 d-flex gap-2">
+        <button class="btn btn-outline-secondary" (click)="limpiarFiltros()">
+          <i class="uil uil-times"></i> Limpiar
+        </button>
+      </div>
+
     </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border text-primary"></div>
   </div>
 
   <!-- Tabla -->
-  <div class="card shadow-sm mb-4">
-    <div class="card-header bg-white">
-      <strong>Listado de Reservas</strong>
-    </div>
+  <div *ngIf="!loading" class="card shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Usuario</th>
+          <th>Sala</th>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th>Estado</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
 
-    <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="table-light">
-          <tr>
-            <th>Usuario</th>
-            <th>Sala</th>
-            <th>Inicio</th>
-            <th>Fin</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
+      <tbody>
+        <tr *ngFor="let r of reservas">
+          <td>{{ r.usuario }}</td>
+          <td>{{ r.sala }}</td>
+          <td>{{ r.fechaInicio | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ r.fechaFin | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <span
+              class="badge"
+              [ngClass]="{
+                'bg-success': r.estado === 'ACTIVA',
+                'bg-danger': r.estado === 'CANCELADA',
+                'bg-secondary': r.estado === 'FINALIZADA'
+              }"
+            >
+              {{ r.estado }}
+            </span>
+          </td>
+           <td class="text-center">
+            <div class="d-flex justify-content-center gap-2">
 
-        <tbody>
-          <tr *ngFor="let r of reservas">
-            <td>
-              <div class="d-flex align-items-center">
-                <i class="bi bi-person-circle me-2 text-primary"></i>
-                <span>{{ r.usuario }}</span>
-              </div>
-            </td>
-
-            <td>{{ r.sala }}</td>
-            <td>{{ r.fechaInicio | date:'dd/MM/yyyy HH:mm' }}</td>
-            <td>{{ r.fechaFin | date:'dd/MM/yyyy HH:mm' }}</td>
-            <td>
-              <span
-                class="badge"
-                [ngClass]="{
-                  'bg-success': r.estado === 'ACTIVA',
-                  'bg-danger': r.estado === 'CANCELADA',
-                  'bg-secondary': r.estado === 'FINALIZADA'
-                }"
+              <!-- Ver detalle -->
+              <button
+                class="btn btn-sm btn-outline-primary"
+                (click)="verDetalle(r.idReserva)"
+                title="Ver detalle"
               >
-                {{ r.estado }}
-              </span>
-            </td>
+                <i class="uil uil-eye"></i>
+              </button>
 
-          </tr>
+              <!-- Cancelar -->
+              <button
+                *ngIf="r.estado === 'ACTIVA'"
+                class="btn btn-sm btn-outline-danger"
+                (click)="cancelar(r)"
+                title="Cancelar"
+              >
+                <i class="uil uil-times-circle"></i>
+              </button>
 
-          <tr *ngIf="reservas.length === 0">
-            <td colspan="5" class="text-center py-4 text-muted">
-              No hay reservas registradas
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="reservas.length === 0">
+          <td colspan="6" class="text-center py-4 text-muted">
+            No hay reservas registradas
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+
+  <!-- Paginación -->
   <app-pagination
     [page]="page"
     [size]="size"
     [total]="total"
     (pageChange)="cambiarPagina($event)">
   </app-pagination>
-
 
 </div>

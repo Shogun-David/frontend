@@ -3,6 +3,7 @@ export interface ReservaModel{
     sala: string;
     fechaInicio: string;
     fechaFin: string;
+    numeroAsistentes: number;
     estado: string;
     fechaCreacion: string;
 }

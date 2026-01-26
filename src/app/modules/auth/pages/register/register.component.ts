@@ -69,7 +69,6 @@ export class RegisterComponent implements OnInit {
 
     const request = {
       username: this.formRegister.value.username,
-      email: this.formRegister.value.email,
       password: this.formRegister.value.password
     };
 

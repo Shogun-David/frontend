@@ -8,13 +8,15 @@ import { CrearReservaModalComponent } from './components/crear-reserva-modal/cre
 import { SharedModule } from "@shared/shared.module";
 import { CalendarioPageComponent } from './pages/calendario-page/calendario-page.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { DetalleReservaComponent } from './components/detalle-reserva/detalle-reserva.component';
 
 
 @NgModule({
   declarations: [
     ReservasPageComponent,
     CrearReservaModalComponent,
-    CalendarioPageComponent
+    CalendarioPageComponent,
+    DetalleReservaComponent
   ],
   imports: [
     CommonModule,

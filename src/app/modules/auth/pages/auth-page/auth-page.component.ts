@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@modules/auth/services/auth.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-auth-page',
@@ -16,7 +17,8 @@ export class AuthPageComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+
   ) {}
 
   ngOnInit(): void {
@@ -39,8 +41,9 @@ export class AuthPageComponent implements OnInit {
 
     this.authService.login(username, password).subscribe({
       next: (response) => {
-        const isAdmin = response.roles.includes('ADMIN');
-        this.router.navigate(isAdmin ? ['/admin'] : ['/reservas']);
+        const token = response.token;
+        //const isAdmin = response.roles.includes('ADMIN');
+        //this.router.navigate(isAdmin ? ['/admin'] : ['/reservas']);
         this.isLoading = false;
       },
       error: () => {
@@ -49,4 +52,7 @@ export class AuthPageComponent implements OnInit {
       }
     });
   }
+
+
+  
 }

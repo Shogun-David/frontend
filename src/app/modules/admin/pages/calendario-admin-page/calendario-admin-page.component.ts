@@ -23,7 +23,7 @@ export class CalendarioAdminPageComponent {
   
     cargarCalendarioAdmin(): void {
       this.loading = true;
-  
+      /*
       this.reservasService.getReservationsAdmin()
         .subscribe({
           next: res => {
@@ -38,7 +38,8 @@ export class CalendarioAdminPageComponent {
           },
           error: () => this.loading = false
         });
-    }
+    */
+      }
   
     private colorPorEstado(estado: string): string {
       switch (estado) {
