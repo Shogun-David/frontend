@@ -15,7 +15,7 @@
 
     <div class="d-flex flex-column overflow-hidden">
       <span class="fw-bold text-truncate">{{ user.username }}</span>
-      <small class="text-muted text-truncate" style="font-size: 0.85rem;">
+      <small class="text-muted text-truncate" style="font-size: 0.85rem; color: white;">
         {{ isAdmin(user) ? 'Administrador' : 'Usuario' }}
       </small>
     </div>
@@ -44,7 +44,7 @@
     </li>
 
     <!-- BOTONES SOLO ADMIN -->
-    <ng-container *ngIf="user$ | async as user">
+     <ng-container *ngIf="user$ | async as user">
       <li class="nav-item" *ngIf="isAdmin(user)">
         <a routerLink="/salas"
           routerLinkActive="active"
