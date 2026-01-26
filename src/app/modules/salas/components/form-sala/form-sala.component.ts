@@ -30,7 +30,7 @@ export class FormSalaComponent implements OnInit {
       nombre: [this.sala?.nombre ?? '', Validators.required],
       capacidad: [this.sala?.capacidad ?? null, Validators.required],
       ubicacion: [this.sala?.ubicacion ?? '', Validators.required],
-      estado: ['D']
+      estado: ['A']
     });
 
     if (this.isEditMode) {
