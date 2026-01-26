@@ -14,7 +14,6 @@
                 <div class="d-flex gap-2 align-items-center">
                     <!-- Filtro -->
                     <select class="form-select border-secondary-subtle" style="width: 180px" (change)="onEstadoChange($event)">
-                        <option value="">Todos los estados</option>
                         <option value="A">ACTIVO</option>
                         <option value="I">INACTIVO</option>
                     </select>
@@ -72,10 +71,10 @@
                             <td class="text-muted"><i class="uil uil-map-marker me-1"></i>{{ sala.ubicacion }}</td>
                             <td>
                                 <span class="badge rounded-pill" [ngClass]="{
-                                    'bg-success': sala.estado === 'D',
-                                    'bg-danger': sala.estado === 'N'
+                                    'bg-success': sala.estado === 'A',
+                                    'bg-danger': sala.estado === 'I'
                                     }">
-                                    {{ sala.estado === 'D' ? 'DISPONIBLE' : (sala.estado === 'N' ? 'NO DISPONIBLE' : sala.estado) }}
+                                    {{ sala.estado === 'A' ? 'ACTIVO' : (sala.estado === 'I' ? 'INACTIVO' : sala.estado) }}
                                 </span>
                             </td>
 

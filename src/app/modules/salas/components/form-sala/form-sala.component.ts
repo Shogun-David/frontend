@@ -27,9 +27,9 @@ export class FormSalaComponent implements OnInit {
     this.isEditMode = !!this.sala;
 
     this.form = this.fb.group({
-      nombre: [this.sala?.nombre ?? '', Validators.required],
-      capacidad: [this.sala?.capacidad ?? null, Validators.required],
-      ubicacion: [this.sala?.ubicacion ?? '', Validators.required],
+      nombre: [this.sala?.nombre ?? '', [Validators.required, Validators.minLength(3)]],
+      capacidad: [this.sala?.capacidad ?? null, [Validators.required, Validators.min(1)]],
+      ubicacion: [this.sala?.ubicacion ?? '', [Validators.required, Validators.minLength(3)]],
       estado: ['A']
     });
 
