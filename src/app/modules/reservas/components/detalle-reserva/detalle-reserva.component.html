@@ -1,0 +1,80 @@
+<div class="modal-header">
+  <h5 class="modal-title">
+    <i class="uil uil-info-circle me-2"></i>
+    Detalle de Reserva
+  </h5>
+
+  <button
+    type="button"
+    class="btn-close"
+    (click)="activeModal.close()">
+  </button>
+</div>
+
+<div class="modal-body">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border text-primary"></div>
+  </div>
+
+  <!-- Detalle -->
+  <div *ngIf="!loading && reserva" class="row g-3">
+
+    <div class="col-md-6">
+      <strong>Sala:</strong>
+      <div class="text-muted">{{ reserva.sala }}</div>
+    </div>
+
+    <div class="col-md-6">
+      <strong>Estado:</strong>
+      <div>
+        <span
+          class="badge"
+          [ngClass]="{
+            'bg-success': reserva.estado === 'ACTIVA',
+            'bg-danger': reserva.estado === 'CANCELADA',
+            'bg-secondary': reserva.estado === 'FINALIZADA'
+          }"
+        >
+          {{ reserva.estado }}
+        </span>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <strong>Fecha inicio:</strong>
+      <div class="text-muted">
+        {{ reserva.fechaInicio | date:'dd/MM/yyyy HH:mm' }}
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <strong>Fecha fin:</strong>
+      <div class="text-muted">
+        {{ reserva.fechaFin | date:'dd/MM/yyyy HH:mm' }}
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <strong>Asistentes:</strong>
+      <div class="text-muted">
+        {{ reserva.numeroAsistentes }}
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <strong>Creada el:</strong>
+      <div class="text-muted">
+        {{ reserva.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-secondary" (click)="activeModal.close()">
+    Cerrar
+  </button>
+</div>

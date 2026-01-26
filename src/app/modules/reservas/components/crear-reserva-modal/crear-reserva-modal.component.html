@@ -19,25 +19,9 @@
           {{ sala.nombre }} - {{ sala.ubicacion }}
         </option>
       </select>
-    </div>
-
-    <!-- CALENDARIO -->
-    <div class="mb-4" *ngIf="calendarOptions">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <label class="form-label mb-0">
-          Seleccione un rango disponible
-        </label>
-        <span class="badge bg-info text-dark" title="Haz click en el primer día y arrastra hasta el último.">
-          Cómo usar
-        </span>
+      <div class="text-danger small" *ngIf="form.get('idSala')?.touched && form.get('idSala')?.invalid">
+        La sala es obligatoria
       </div>
-
-      <small class="text-muted d-block mb-2">
-        🔴 Días ocupados no disponibles. <br/>
-        🟢 Selecciona un rango arrastrando en el calendario.
-      </small>
-
-      <full-calendar class="fullcalendar" [options]="calendarOptions"></full-calendar>
     </div>
 
     <!-- FECHA INICIO -->
@@ -48,8 +32,10 @@
         class="form-control"
         formControlName="fechaInicio"
         [min]="minFechaInicio"
-        readonly
       >
+      <div class="text-danger small" *ngIf="form.get('fechaInicio')?.touched && form.get('fechaInicio')?.invalid">
+        La fecha de inicio es obligatoria
+      </div>
     </div>
 
     <!-- FECHA FIN -->
@@ -59,8 +45,45 @@
         type="datetime-local"
         class="form-control"
         formControlName="fechaFin"
-        readonly
+        [min]="minFechaFin"
       >
+      <div class="text-danger small" *ngIf="form.get('fechaFin')?.touched && form.get('fechaFin')?.invalid">
+        La fecha de fin es obligatoria
+      </div>
+    </div>
+
+    <!-- ERROR DE RANGO -->
+    <div class="alert alert-danger py-1" *ngIf="form.errors?.['fechaFinInvalida']">
+      La fecha fin debe ser mayor que la fecha inicio
+    </div>
+
+    <!-- NÚMERO DE ASISTENTES -->
+    <div class="mb-3">
+      <label class="form-label">Número de asistentes</label>
+
+      <input
+        type="number"
+        class="form-control"
+        formControlName="numeroAsistentes"
+        min="1"
+        step="1"
+        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+      />
+
+      <div
+        class="text-danger small"
+        *ngIf="
+          form.get('numeroAsistentes')?.touched &&
+          form.get('numeroAsistentes')?.invalid
+        "
+      >
+        <div *ngIf="form.get('numeroAsistentes')?.errors?.['required']">
+          El número de asistentes es obligatorio
+        </div>
+        <div *ngIf="form.get('numeroAsistentes')?.errors?.['min']">
+          Debe ser al menos 1 asistente
+        </div>
+      </div>
     </div>
 
     <!-- OBSERVACIÓN -->
@@ -70,13 +93,8 @@
         type="text"
         class="form-control"
         formControlName="observacion"
-        placeholder="Ej. Reunión mensual, capacitacion, etc."
+        placeholder="Ej. Reunión mensual, capacitación, etc."
       >
-    </div>
-
-    <!-- ERROR -->
-    <div class="alert alert-danger py-1" *ngIf="form.errors?.['fechaFinInvalida']">
-      La fecha fin debe ser mayor que la fecha inicio
     </div>
 
   </form>
@@ -84,7 +102,11 @@
 
 <div class="modal-footer">
   <button class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
-  <button class="btn btn-primary" [disabled]="form.invalid || loading" (click)="guardar()">
+  <button
+    class="btn btn-primary"
+    [disabled]="form.invalid || loading"
+    (click)="guardar()"
+  >
     Guardar
   </button>
 </div>
