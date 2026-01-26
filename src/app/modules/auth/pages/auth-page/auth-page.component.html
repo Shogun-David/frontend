@@ -1,88 +1,82 @@
-<div class="content">
-  <div class="login-container">
-    <div class="login-card">
+<div class="d-flex justify-content-center align-items-center min-vh-100 bg-light py-4">
+  <div class="card shadow border-0 rounded-4" style="max-width: 400px; width: 100%;">
+    <div class="card-body p-4 p-md-5">
 
-      <h1>Iniciar Sesión</h1>
-
-      <!-- ❌ Error de autenticación -->
-      <div *ngIf="errorMessage" class="error-message">
-        {{ errorMessage }}
+      <div class="text-center mb-4">
+        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+            <i class="uil uil-user-circle display-6"></i>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Iniciar Sesión</h3>
+        <p class="text-muted small">Bienvenido al sistema de reservas</p>
       </div>
 
-      <!-- ℹ️ Credenciales de prueba (solo DEV) -->
-      <div class="credentials-info">
-        <p><strong>Credenciales de prueba:</strong></p>
-        <p>👨‍💼 Admin: <b>admin</b> / admin123</p>
-        <p>👤 Usuario: <b>user</b> / user123</p>
+      <!-- ❌ Error de autenticación -->
+      <div *ngIf="errorMessage" class="alert alert-danger d-flex align-items-center p-2 small mb-3" role="alert">
+        <i class="uil uil-exclamation-triangle me-2 fs-5"></i>
+        <div>{{ errorMessage }}</div>
       </div>
 
       <!-- 🧾 Formulario -->
       <form [formGroup]="formLogin" (ngSubmit)="sendLogin()">
 
         <!-- USERNAME -->
-        <div class="form-group">
-          <label for="username">Usuario</label>
+        <div class="form-floating mb-3">
           <input
             id="username"
             type="text"
             class="form-control"
+            [ngClass]="{'is-invalid': formLogin.get('username')?.invalid && formLogin.get('username')?.touched}"
             formControlName="username"
-            placeholder="Ingresa tu usuario"
+            placeholder="Usuario"
             autocomplete="username"
           >
+          <label for="username">Usuario</label>
 
-          <small
-            class="error-text"
-            *ngIf="formLogin.get('username')?.hasError('required') && formLogin.get('username')?.touched"
-          >
+          <div class="invalid-feedback" *ngIf="formLogin.get('username')?.hasError('required')">
             El usuario es requerido
-          </small>
+          </div>
         </div>
 
         <!-- PASSWORD -->
-        <div class="form-group">
-          <label for="password">Contraseña</label>
+        <div class="form-floating mb-4">
           <input
             id="password"
             type="password"
             class="form-control"
+            [ngClass]="{'is-invalid': formLogin.get('password')?.invalid && formLogin.get('password')?.touched}"
             formControlName="password"
-            placeholder="Ingresa tu contraseña"
+            placeholder="Contraseña"
             autocomplete="current-password"
           >
+          <label for="password">Contraseña</label>
 
-          <small
-            class="error-text"
-            *ngIf="formLogin.get('password')?.hasError('required') && formLogin.get('password')?.touched"
-          >
+          <div class="invalid-feedback" *ngIf="formLogin.get('password')?.hasError('required')">
             La contraseña es requerida
-          </small>
-
-          <small
-            class="error-text"
-            *ngIf="formLogin.get('password')?.hasError('minlength') && formLogin.get('password')?.touched"
-          >
+          </div>
+          <div class="invalid-feedback" *ngIf="formLogin.get('password')?.hasError('minlength')">
             Mínimo 6 caracteres
-          </small>
+          </div>
         </div>
 
         <!-- BOTÓN -->
         <button
           type="submit"
-          class="btn-login"
+          class="btn btn-primary w-100 py-2 fw-bold shadow-sm"
           [disabled]="formLogin.invalid || isLoading"
         >
-          {{ isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isLoading ? 'Iniciando sesión...' : 'Ingresar' }}
         </button>
 
       </form>
 
       <!-- REGISTRO -->
-      <p class="register-link">
-        ¿No tienes cuenta?
-        <a routerLink="/auth/register">Regístrate aquí</a>
-      </p>
-
+      <div class="text-center mt-4">
+        <p class="text-muted small mb-0">
+          ¿No tienes cuenta?
+          <a routerLink="/auth/register" class="text-primary text-decoration-none fw-bold">Regístrate aquí</a>
+        </p>
+      </div>
     </div>
   </div>
 </div>

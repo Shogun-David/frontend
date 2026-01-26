@@ -15,7 +15,7 @@ interface LoginResponse {
 })
 export class AuthService {
 
-  private readonly API_URL = 'http://localhost:8080/auth';
+  private readonly API_URL = 'http://localhost:8080/api/auth';
 
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();

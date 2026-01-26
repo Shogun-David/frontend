@@ -1,112 +1,119 @@
-<div class="container-fluid">
+<div class="container-fluid py-4">
 
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h4 class="mb-0">
-                <i class="uil uil-journal-text me-2"></i>
-                Salas
-            </h4>
-            <small class="text-muted">
-                Gestión y visualización de tus salas
-            </small>
-        </div>
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <!-- Header -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+                <div>
+                    <h4 class="mb-1 fw-bold text-primary">
+                        <i class="uil uil-journal-text me-2"></i>Salas
+                    </h4>
+                    <p class="text-muted mb-0">Gestión y visualización de tus salas</p>
+                </div>
 
-        <div class="d-flex gap-2 align-items-center">
-            <!-- Filtro -->
-            <select class="form-select" style="width: 180px" (change)="onEstadoChange($event)">
-                <option value="">Todos</option>
-                <option value="D">DISPONIBLE</option>
-                <option value="N">NO DISPONIBLE</option>
-            </select>
+                <div class="d-flex gap-2 align-items-center">
+                    <!-- Filtro -->
+                    <select class="form-select border-secondary-subtle" style="width: 180px" (change)="onEstadoChange($event)">
+                        <option value="">Todos los estados</option>
+                        <option value="D">DISPONIBLE</option>
+                        <option value="N">NO DISPONIBLE</option>
+                    </select>
 
-            <!-- Botón Nueva Sala -->
-            <button (click)="openCreateModal()" class="btn btn-primary">
-                <i class="uil uil-plus-circle me-1"></i>
-                Nueva Sala
-            </button>
+                    <!-- Botón Nueva Sala -->
+                    <button (click)="openCreateModal()" class="btn btn-primary d-flex align-items-center shadow-sm">
+                        <i class="uil uil-plus-circle me-2"></i>Nueva Sala
+                    </button>
+                </div>
+            </div>
+
             <!-- Modal Form Sala -->
             <app-form-sala *ngIf="showModal" [sala]="selectedSala" (saved)="onSalaSaved()"
                 (closed)="showModal = false"></app-form-sala>
+
+            <!-- Tabla -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light text-uppercase small text-muted">
+                        <tr>
+                            <th (click)="changeSort('nombre')" style="cursor: pointer" class="border-0 rounded-start">
+                                Nombre
+                                <i class="uil ms-1" [ngClass]="{
+                                'uil-sort': paginationState.sortColumn !== 'nombre',
+                                'uil-angle-up': paginationState.sortColumn === 'nombre' 
+                                    && paginationState.sortDirection === 'ASC',
+                                'uil-angle-down': paginationState.sortColumn === 'nombre' 
+                                    && paginationState.sortDirection === 'DESC'
+                                }">
+                                </i>
+                            </th>
+
+                            <th (click)="changeSort('capacidad')" style="cursor: pointer" class="border-0">
+                                Capacidad
+                                <i class="uil ms-1" [ngClass]="{
+                                'uil-sort': paginationState.sortColumn !== 'capacidad',
+                                'uil-angle-up': paginationState.sortColumn === 'capacidad' 
+                                    && paginationState.sortDirection === 'ASC',
+                                'uil-angle-down': paginationState.sortColumn === 'capacidad' 
+                                    && paginationState.sortDirection === 'DESC'
+                                }">
+                                </i>
+                            </th>
+                            <th class="border-0">Ubicación</th>
+                            <th class="border-0">Estado</th>
+
+                            <th class="text-center border-0 rounded-end">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody *ngIf="salas.length > 0; else noData">
+                        <tr *ngFor="let sala of salas">
+                            <td class="fw-medium">{{ sala.nombre }}</td>
+                            <td><span class="badge bg-light text-dark border">{{ sala.capacidad }} Personas</span></td>
+                            <td class="text-muted"><i class="uil uil-map-marker me-1"></i>{{ sala.ubicacion }}</td>
+                            <td>
+                                <span class="badge rounded-pill" [ngClass]="{
+                                    'bg-success': sala.estado === 'D',
+                                    'bg-danger': sala.estado === 'N'
+                                    }">
+                                    {{ sala.estado === 'D' ? 'DISPONIBLE' : (sala.estado === 'N' ? 'NO DISPONIBLE' : sala.estado) }}
+                                </span>
+                            </td>
+
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button (click)="openEditModal(sala)" class="btn btn-sm btn-outline-secondary" title="Editar sala">
+                                        <i class="uil uil-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-warning" (click)="cancelar(sala)" title="Cambiar estado">
+                                        <i class="uil uil-exchange"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <ng-template #noData>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="uil uil-box d-block display-4 mb-2"></i>
+                                    No hay salas registradas
+                                </td>
+                            </tr>
+                        </tbody>
+                    </ng-template>
+
+                </table>
+            </div>
+
+            <!-- Paginación -->
+            <div class="mt-4 d-flex justify-content-end">
+                <app-pagination
+                    [page]="totalPages" 
+                    [size]="paginationState.pageNumber"
+                    (pageChange)="onPageChange($event)">
+                </app-pagination>
+            </div>
         </div>
     </div>
-
-    <!-- Tabla -->
-    <div>
-        <table class="table table-hover mb-0 align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th (click)="changeSort('nombre')" style="cursor: pointer">
-                        Nombre
-                        <i class="uil ms-1" [ngClass]="{
-                        'uil-sort': paginationState.sortColumn !== 'nombre',
-                        'uil-angle-up': paginationState.sortColumn === 'nombre' 
-                            && paginationState.sortDirection === 'ASC',
-                        'uil-angle-down': paginationState.sortColumn === 'nombre' 
-                            && paginationState.sortDirection === 'DESC'
-                        }">
-                        </i>
-                    </th>
-
-                    <th (click)="changeSort('capacidad')" style="cursor: pointer">
-                        Capacidad
-                        <i class="uil ms-1" [ngClass]="{
-                        'uil-sort': paginationState.sortColumn !== 'capacidad',
-                        'uil-angle-up': paginationState.sortColumn === 'capacidad' 
-                            && paginationState.sortDirection === 'ASC',
-                        'uil-angle-down': paginationState.sortColumn === 'capacidad' 
-                            && paginationState.sortDirection === 'DESC'
-                        }">
-                        </i>
-                    </th>
-                    <th>Ubicación</th>
-                    <th>Estado</th>
-
-                    <th class="text-center">Acciones</th>
-                </tr>
-            </thead>
-
-            <tbody *ngIf="salas.length > 0; else noData">
-                <tr *ngFor="let sala of salas">
-                    <td>{{ sala.nombre }}</td>
-                    <td>{{ sala.capacidad }}</td>
-                    <td>{{ sala.ubicacion }}</td>
-                    <td>
-                        <span class="badge" [ngClass]="{
-                            'bg-success': sala.estado === 'D',
-                            'bg-danger': sala.estado === 'N'
-                            }">
-                            {{ sala.estado }}
-                        </span>
-                    </td>
-
-                    <td class="text-center">
-                        <div class="d-flex justify-content-center gap-2">
-                            <button (click)="openEditModal(sala)" class="btn btn-secondary">
-                                Actualizar
-                            </button>
-                            <button class="btn btn-warning" (click)="cancelar(sala)">
-                                Cambiar estado
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-
-            <ng-template #noData>
-                <tr>
-                    <td colspan="5" class="text-center py-4 text-muted">
-                        No hay salas registradas
-                    </td>
-                </tr>
-            </ng-template>
-
-        </table>
-    </div>
-    <!-- Paginación -->
-    <app-pagination-sala
-        [totalPages]="totalPages" 
-        [currentPage]="paginationState.pageNumber"
-        (pageChange)="onPageChange($event)">
-    </app-pagination-sala>
 </div>

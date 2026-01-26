@@ -1,95 +1,113 @@
-<div class="content">
-  <div class="register-container">
-    <div class="register-card">
-      <h1>Crear Cuenta</h1>
-      <p class="subtitle">Registro de usuario</p>
+<div class="d-flex justify-content-center align-items-center min-vh-100 bg-light py-4">
+  <div class="card shadow border-0 rounded-4" style="max-width: 450px; width: 100%;">
+    <div class="card-body p-4 p-md-5">
+
+      <div class="text-center mb-4">
+        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+            <i class="uil uil-user-plus display-6"></i>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Crear Cuenta</h3>
+        <p class="text-muted small">Registro de nuevo usuario</p>
+      </div>
 
       <!-- Error -->
-      <div *ngIf="errorMessage" class="alert alert-danger">
-        {{ errorMessage }}
+      <div *ngIf="errorMessage" class="alert alert-danger d-flex align-items-center p-2 small mb-3" role="alert">
+        <i class="uil uil-exclamation-triangle me-2 fs-5"></i>
+        <div>{{ errorMessage }}</div>
       </div>
 
       <!-- Éxito -->
-      <div *ngIf="successMessage" class="alert alert-success">
-        {{ successMessage }}
+      <div *ngIf="successMessage" class="alert alert-success d-flex align-items-center p-2 small mb-3" role="alert">
+        <i class="uil uil-check-circle me-2 fs-5"></i>
+        <div>{{ successMessage }}</div>
       </div>
 
+      <!-- Formulario -->
       <form [formGroup]="formRegister" (ngSubmit)="registrar()">
 
         <!-- Username -->
-        <div class="form-group">
-          <label>Usuario</label>
+        <div class="form-floating mb-3">
           <input
             type="text"
+            id="username"
             class="form-control"
+            [ngClass]="{'is-invalid': formRegister.get('username')?.touched && formRegister.get('username')?.invalid}"
             formControlName="username"
-            placeholder="usuario123"
+            placeholder="Usuario"
+            autocomplete="username"
           />
-          <small class="text-danger"
-            *ngIf="formRegister.get('username')?.touched &&
-                   formRegister.get('username')?.invalid">
+          <label for="username">Usuario</label>
+          <div class="invalid-feedback">
             Usuario inválido
-          </small>
+          </div>
         </div>
 
         <!-- Email -->
-        <div class="form-group">
-          <label>Email</label>
+        <div class="form-floating mb-3">
           <input
             type="email"
+            id="email"
             class="form-control"
+            [ngClass]="{'is-invalid': formRegister.get('email')?.touched && formRegister.get('email')?.invalid}"
             formControlName="email"
-            placeholder="correo@usuario.com"
+            placeholder="Email"
+            autocomplete="email"
           />
-          <small class="text-danger"
-            *ngIf="formRegister.get('email')?.touched &&
-                   formRegister.get('email')?.invalid">
+          <label for="email">Email</label>
+          <div class="invalid-feedback">
             Email inválido
-          </small>
+          </div>
         </div>
 
         <!-- Password -->
-        <div class="form-group">
-          <label>Contraseña</label>
+        <div class="form-floating mb-3">
           <input
             type="password"
+            id="password"
             class="form-control"
+            [ngClass]="{'is-invalid': formRegister.get('password')?.touched && formRegister.get('password')?.invalid}"
             formControlName="password"
+            placeholder="Contraseña"
+            autocomplete="new-password"
           />
-          <small class="text-danger"
-            *ngIf="formRegister.get('password')?.touched &&
-                   formRegister.get('password')?.invalid">
+          <label for="password">Contraseña</label>
+          <div class="invalid-feedback">
             Mínimo 6 caracteres
-          </small>
+          </div>
         </div>
 
         <!-- Confirmar Password -->
-        <div class="form-group">
-          <label>Confirmar Contraseña</label>
+        <div class="form-floating mb-4">
           <input
             type="password"
+            id="confirmarPassword"
             class="form-control"
+            [ngClass]="{'is-invalid': !passwordsCoinciden && formRegister.get('confirmarPassword')?.touched}"
             formControlName="confirmarPassword"
+            placeholder="Confirmar Contraseña"
+            autocomplete="new-password"
           />
-          <small class="text-danger"
-            *ngIf="!passwordsCoinciden &&
-                   formRegister.get('confirmarPassword')?.touched">
+          <label for="confirmarPassword">Confirmar Contraseña</label>
+          <div class="invalid-feedback" *ngIf="!passwordsCoinciden">
             Las contraseñas no coinciden
-          </small>
+          </div>
         </div>
 
         <button
           type="submit"
-          class="btn btn-primary w-100"
+          class="btn btn-primary w-100 py-2 fw-bold shadow-sm"
           [disabled]="isLoading || formRegister.invalid || !passwordsCoinciden">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
           {{ isLoading ? 'Registrando...' : 'Registrarse' }}
         </button>
       </form>
 
-      <p class="login-link mt-3">
-        ¿Ya tienes cuenta?
-        <a (click)="irALogin()">Inicia sesión</a>
-      </p>
+      <div class="text-center mt-4">
+        <p class="text-muted small mb-0">
+          ¿Ya tienes cuenta?
+          <a (click)="irALogin()" class="text-primary text-decoration-none fw-bold" style="cursor: pointer;">Inicia sesión</a>
+        </p>
+      </div>
     </div>
   </div>
 </div>
